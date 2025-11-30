@@ -1,5 +1,8 @@
+import CLI.SimulationCLI;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World");
+        SimulationCLI simulationCLI = new SimulationCLI(20,20);
+        simulationCLI.startSimulation();
     }
 }
