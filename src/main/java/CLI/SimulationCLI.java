@@ -10,6 +10,7 @@ public class SimulationCLI {
     }
 
     public void startSimulation() {
-
+        ecosystem.initGrid();
+        ecosystem.simulateStep();
     }
 }
