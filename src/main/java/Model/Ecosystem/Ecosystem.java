@@ -1,14 +1,14 @@
 package Model.Ecosystem;
 
 import Model.Organisms.Organism;
-import Model.Organisms.Plant; // Importa as tuas classes concretas
+import Model.Organisms.Plant;
 import Model.Organisms.Sheep;
 import Model.Organisms.Wolf;
 import Model.Util.OrganismType;
 import Model.Util.Position;
-import Model.Util.SimulationConfig; // A classe que criamos acima
+import Model.Util.SimulationConfig;
 
-import java.util.ArrayList; // Importante!
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +33,18 @@ public class Ecosystem {
         this.random = new Random();
     }
 
+    /**
+     * Simulates a step/year in the ecossystem
+     */
+    public void simulateStep() {
+        stepCount++;
+        System.out.println("Step: " + stepCount);
+        printGrid();
+    }
+
+    /**
+     * Initializes the grid creating randomly the organisms
+     */
     public void initGrid() {
         // Limpar lista e grelha caso se reinicie
         this.organisms.clear();
@@ -55,6 +67,14 @@ public class Ecosystem {
         }
     }
 
+    /**
+     * Creates a new organism based on probabilities configured in the
+     * SimulationConfig.java class
+     * @param x X Coordinate
+     * @param y Y Coordinate
+     * @param roll Random Generated Probability
+     * @return Organism
+     */
     private Organism getOrganism(int x, int y, double roll) {
         Position pos = new Position(x, y);
         Organism newOrg = null;
@@ -75,6 +95,9 @@ public class Ecosystem {
         return newOrg;
     }
 
+    /**
+     * Prints the current grid layout.
+     */
     private void printGrid() {
         // Linha de cima
         System.out.print("+");
@@ -101,9 +124,29 @@ public class Ecosystem {
         System.out.println("+");
     }
 
-    public void simulateStep() {
-        stepCount++;
-        System.out.println("Step: " + stepCount);
-        printGrid();
+    /**
+     * Get the grid's current stats
+     * @return String
+     */
+    public String getInfo() {
+        int sheep = 0;
+        int wolf = 0;
+        int plant = 0;
+        int vazio = 0;
+
+        for (Organism arr : organisms) {
+            switch (arr) {
+                case Wolf wolf1 -> wolf++;
+                case Sheep sheep1 -> sheep++;
+                case Plant plant1 -> plant++;
+                case null, default -> vazio++;
+            }
+        }
+
+        return "\nAlive: " + (sheep+wolf+plant) +
+                "\nSheep: " + sheep +
+                "\nWolf: " + wolf +
+                "\nPlant: " + plant +
+                "\nVazio: " + vazio;
     }
 }
