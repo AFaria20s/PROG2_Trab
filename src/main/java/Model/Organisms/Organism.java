@@ -7,14 +7,12 @@ import Model.Util.Position;
 public abstract class Organism {
     private Position position;
     private int age;
-    private final int maxAge;
     private boolean alive;
     private final OrganismType type;
 
-    public Organism(Position pos, int maxAge, OrganismType type) {
+    public Organism(Position pos, OrganismType type) {
         this.position = pos;
         this.age = 0;
-        this.maxAge = maxAge;
         this.alive = true;
         this.type = type;
     }
@@ -24,13 +22,14 @@ public abstract class Organism {
      * Deve ser implementado por cada espécie.
      */
     public abstract void step(Ecosystem eco);
+    protected abstract int getMaxAgeLimit();
 
     public void increaseAge() {
         this.age++;
     }
 
     public void checkMaxAge() {
-        if (this.age > this.maxAge) {
+        if (this.age > getMaxAgeLimit()) {
             this.die();
         }
     }
