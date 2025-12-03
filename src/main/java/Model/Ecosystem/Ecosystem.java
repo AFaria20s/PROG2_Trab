@@ -42,20 +42,7 @@ public class Ecosystem {
             for (int x = 0; x < this.width; x++) {
 
                 double roll = random.nextDouble(); // Gera número entre 0.0 e 1.0
-                Position pos = new Position(x, y);
-                Organism newOrg = null;
-
-                // Lógica de decisão baseada em probabilidades acumuladas
-                if (roll < SimulationConfig.PROB_WOLF) {
-                    newOrg = new Wolf(pos);
-                }
-                else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP)) {
-                    newOrg = new Sheep(pos);
-                }
-                else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP + SimulationConfig.PROB_PLANT)) {
-                    newOrg = new Plant(pos);
-                }
-                // Se não entrar em nenhum if, fica null/vazio
+                Organism newOrg = getOrganism(x, y, roll);
 
                 // Se criamos um organismo, adicionamos à grelha e à lista
                 if (newOrg != null) {
@@ -66,6 +53,23 @@ public class Ecosystem {
                 }
             }
         }
+    }
+
+    private Organism getOrganism(int x, int y, double roll) {
+        Position pos = new Position(x, y);
+        Organism newOrg = null;
+
+        // Lógica de decisão baseada em probabilidades acumuladas
+        if (roll < SimulationConfig.PROB_WOLF) {
+            newOrg = new Wolf(pos);
+        }
+        else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP)) {
+            newOrg = new Sheep(pos);
+        }
+        else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP + SimulationConfig.PROB_PLANT)) {
+            newOrg = new Plant(pos);
+        }
+        return newOrg;
     }
 
     private void printGrid() {
