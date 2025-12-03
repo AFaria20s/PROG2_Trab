@@ -15,10 +15,13 @@ public class SimulationConfig {
         return instance;
     }
 
+    // Temporizador para steps automaticos
+    private int STEPS_PER_SECOND = 1;
+
     // Probabilidades de Spawn
     private double PROB_WOLF = 0.04;
     private double PROB_SHEEP = 0.09;
-    private double PROB_PLANT = 0.15;
+    private double PROB_PLANT = 0.11;
 
     // Regras da Ovelha
     private int SHEEP_MAX_AGE = 30;
@@ -39,45 +42,36 @@ public class SimulationConfig {
     public double getPROB_PLANT() { return PROB_PLANT; }
     public int getSHEEP_ENERGY_GAIN() { return SHEEP_ENERGY_GAIN; }
     public int getWOLF_MAX_AGE() { return WOLF_MAX_AGE; }
-
     public int getPLANT_MAX_AGE() {
         return PLANT_MAX_AGE;
     }
+    public int getSTEPS_PER_SECOND() { return STEPS_PER_SECOND; }
 
     // Setters
     public void setSHEEP_REPRODUCTION_PROB(double prob) {
         this.SHEEP_REPRODUCTION_PROB = prob;
     }
-
     public void setWolfMaxAge(int age) {
         this.WOLF_MAX_AGE = age;
     }
-
     public void setWOLF_MAX_AGE(int WOLF_MAX_AGE) {
         this.WOLF_MAX_AGE = WOLF_MAX_AGE;
     }
-
     public void setPROB_WOLF(double PROB_WOLF) {
         this.PROB_WOLF = PROB_WOLF;
     }
-
     public void setPROB_SHEEP(double PROB_SHEEP) {
         this.PROB_SHEEP = PROB_SHEEP;
     }
-
     public void setPROB_PLANT(double PROB_PLANT) {
         this.PROB_PLANT = PROB_PLANT;
     }
-
     public void setSHEEP_MAX_AGE(int SHEEP_MAX_AGE) {
         this.SHEEP_MAX_AGE = SHEEP_MAX_AGE;
     }
-
     public void setSHEEP_ENERGY_GAIN(int SHEEP_ENERGY_GAIN) {
         this.SHEEP_ENERGY_GAIN = SHEEP_ENERGY_GAIN;
     }
-
-    public void setPLANT_MAX_AGE(int PLANT_MAX_AGE) {
-        this.PLANT_MAX_AGE = PLANT_MAX_AGE;
-    }
+    public void setPLANT_MAX_AGE(int PLANT_MAX_AGE) { this.PLANT_MAX_AGE = PLANT_MAX_AGE;}
+    public void setSTEPS_PER_SECOND(int STEPS_PER_SECOND) {this.STEPS_PER_SECOND = STEPS_PER_SECOND;}
 }

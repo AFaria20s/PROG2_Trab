@@ -149,4 +149,8 @@ public class Ecosystem {
                 "\nPlant: " + plant +
                 "\nVazio: " + vazio;
     }
+
+    public int getStepCount() {
+        return this.stepCount;
+    }
 }
