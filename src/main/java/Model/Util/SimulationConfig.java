@@ -17,8 +17,8 @@ public class SimulationConfig {
 
     // Probabilidades de Spawn
     private double PROB_WOLF = 0.04;
-    private double PROB_SHEEP = 0.12;
-    private double PROB_PLANT = 0.30;
+    private double PROB_SHEEP = 0.09;
+    private double PROB_PLANT = 0.15;
 
     // Regras da Ovelha
     private int SHEEP_MAX_AGE = 30;
