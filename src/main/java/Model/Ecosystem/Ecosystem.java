@@ -60,13 +60,16 @@ public class Ecosystem {
         Organism newOrg = null;
 
         // Lógica de decisão baseada em probabilidades acumuladas
-        if (roll < SimulationConfig.PROB_WOLF) {
+        if (roll < SimulationConfig.getInstance().getPROB_WOLF()) {
             newOrg = new Wolf(pos);
         }
-        else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP)) {
+        else if (roll < (SimulationConfig.getInstance().getPROB_WOLF() +
+                            SimulationConfig.getInstance().getPROB_SHEEP())) {
             newOrg = new Sheep(pos);
         }
-        else if (roll < (SimulationConfig.PROB_WOLF + SimulationConfig.PROB_SHEEP + SimulationConfig.PROB_PLANT)) {
+        else if (roll < (SimulationConfig.getInstance().getPROB_WOLF() +
+                            SimulationConfig.getInstance().getPROB_SHEEP() +
+                            SimulationConfig.getInstance().getPROB_PLANT())) {
             newOrg = new Plant(pos);
         }
         return newOrg;

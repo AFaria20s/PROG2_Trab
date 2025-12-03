@@ -6,13 +6,13 @@ import Model.OrganismActions.Movable;
 import Model.OrganismActions.Reproducible;
 import Model.Util.OrganismType;
 import Model.Util.Position;
+import Model.Util.SimulationConfig;
 
 public class Wolf extends Organism implements Movable, Eater, Reproducible {
-    private static final int WOLF_MAX_AGE = 40;
     private int energy;
 
     public Wolf(Position pos) {
-        super(pos, WOLF_MAX_AGE, OrganismType.WOLF);
+        super(pos, OrganismType.WOLF);
         this.energy = 15;
     }
 
@@ -24,6 +24,11 @@ public class Wolf extends Organism implements Movable, Eater, Reproducible {
     @Override
     public void step(Ecosystem eco) {
 
+    }
+
+    @Override
+    protected int getMaxAgeLimit() {
+        return SimulationConfig.getInstance().getWOLF_MAX_AGE();
     }
 
     @Override
