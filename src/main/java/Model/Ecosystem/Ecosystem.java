@@ -1,9 +1,7 @@
 package Model.Ecosystem;
 
-import Model.Organisms.Organism;
-import Model.Organisms.Plant;
-import Model.Organisms.Sheep;
-import Model.Organisms.Wolf;
+import Model.Organisms.*;
+import Model.Util.Direction;
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
@@ -38,8 +36,63 @@ public class Ecosystem {
      */
     public void simulateStep() {
         stepCount++;
-        System.out.println("Step: " + stepCount);
+
+        // Iterar sobre uma cópia da lista de organismos ativos
+        // Fazemos uma cópia para evitar ConcurrentModificationException,
+        // caso um organismo morra/nasça e altere a lista durante a iteração.
+        // Descobri a existencia deste erro agora lol
+        List<Organism> organismsCopy = new ArrayList<>(this.organisms);
+
+        for (Organism org : organismsCopy) {
+            // Se já morreu no passo anterior, ignorar
+            if (org.isAlive()) {
+                org.step(this);
+            }
+        }
+
+        // Limpar a lista de organismos mortos no final do passo
+        // O Empty é um organismo 'vivo' para o step, mas não é processado
+        this.organisms.removeIf(o -> !o.isAlive() && o.getType() != OrganismType.EMPTY);
+
+        // 3. Imprimir a grelha
         printGrid();
+    }
+
+    /**
+     * Remove um organismo (que morreu de fome/velhice) da grelha e marca-o para remoção da lista.
+     */
+    public void removeOrganism(Organism org) {
+        if (org == null || !org.isAlive()) return;
+
+        Position pos = org.getPosition();
+
+        // 1. Marca o objeto como morto (para ser removido da lista 'organisms' no simulateStep())
+        org.die();
+
+        // 2. Remove da grelha, substituindo-o por Empty
+        // Reutiliza a lógica de substituição do removeOrganismAt, mas chama-a diretamente.
+        this.grid[pos.getY()][pos.getX()] = new Empty(pos, OrganismType.EMPTY);
+    }
+
+    /**
+     * Remove o organismo na posição, marcando-o como morto e substituindo-o por Empty.
+     */
+    public void removeOrganismAt(Position pos) {
+        // Verificação de validade
+        if (!isPositionValid(pos.getX(), pos.getY())) return;
+
+        // O índice da grelha é [Y][X]
+        Organism toRemove = grid[pos.getY()][pos.getX()];
+
+        // Marcar como morto e substituir por Empty
+        if (toRemove != null && toRemove.isAlive() && toRemove.getType() != OrganismType.EMPTY) {
+
+            // Marca o objeto como morto para ser removido da lista 'organisms'
+            toRemove.die();
+
+            // Coloca um novo Empty na grelha, garantindo que a célula está vazia
+            grid[pos.getY()][pos.getX()] = new Empty(pos, OrganismType.EMPTY);
+        }
     }
 
     /**
@@ -54,17 +107,24 @@ public class Ecosystem {
             for (int x = 0; x < this.width; x++) {
 
                 double roll = random.nextDouble(); // Gera número entre 0.0 e 1.0
-                Organism newOrg = getOrganism(x, y, roll);
+                Organism newOrg = genOrganism(x, y, roll);
 
                 // Se criamos um organismo, adicionamos à grelha e à lista
                 if (newOrg != null) {
                     this.grid[y][x] = newOrg;
                     this.organisms.add(newOrg);
                 } else {
-                    this.grid[y][x] = null; // Garante que está vazio
+                    this.grid[y][x] = new Empty(new Position(x,y),OrganismType.EMPTY); // Garante que está vazio
                 }
             }
         }
+    }
+
+    public Organism getOrganismAt(int x, int y) {
+        if (!isPositionValid(x, y)) {
+            return new Empty(new Position(x, y), OrganismType.EMPTY); // Retorna Empty para evitar NullPointer
+        }
+        return grid[y][x];
     }
 
     /**
@@ -75,7 +135,7 @@ public class Ecosystem {
      * @param roll Random Generated Probability
      * @return Organism
      */
-    private Organism getOrganism(int x, int y, double roll) {
+    private Organism genOrganism(int x, int y, double roll) {
         Position pos = new Position(x, y);
         Organism newOrg = null;
 
@@ -93,6 +153,68 @@ public class Ecosystem {
             newOrg = new Plant(pos);
         }
         return newOrg;
+    }
+
+    public List<Position> getAdjacentPositions(Position pos) {
+        List<Position> adjacent = new ArrayList<>();
+
+        // Percorre todas as direções possíveis (N, S, E, O)
+        for (Direction dir : Direction.values()) {
+            int newX = pos.getX() + dir.getDx();
+            int newY = pos.getY() + dir.getDy();
+
+            // Verifica se a nova posição está dentro dos limites da grelha
+            if (isPositionValid(newX, newY)) {
+                adjacent.add(new Position(newX, newY));
+            }
+        }
+        return adjacent;
+    }
+
+    public Position findAdjacentEmptyCell(Position center) {
+        List<Position> adjacents = getAdjacentPositions(center);
+
+        // Filtra as posições adjacentes para encontrar uma célula vazia
+        for (Position p : adjacents) {
+            Organism target = getOrganismAt(p.getX(), p.getY());
+
+            // Com a classe Empty, a verificação é direta e legível!
+            if (target instanceof Empty) {
+                return p; // Encontrou a célula de nascimento
+            }
+        }
+
+        return null; // Nenhuma célula vazia adjacente
+    }
+
+    /**
+     * Move um organismo da sua posição atual para uma nova posição (x, y).
+     * A célula anterior é preenchida com um objeto Empty.
+     */
+    public void moveOrganism(Organism org, int newX, int newY) {
+        Position oldPos = org.getPosition();
+
+        // 1. Limpa a posição antiga (coloca um novo objeto Empty)
+        // Se estás a usar o construtor que só aceita Position:
+        this.grid[oldPos.getY()][oldPos.getX()] = new Empty(oldPos, OrganismType.EMPTY);
+
+        // 2. Atualiza a posição do organismo
+        Position newPos = new Position(newX, newY);
+        org.setPosition(newPos);
+
+        // 3. Coloca o organismo na nova posição
+        this.grid[newY][newX] = org;
+    }
+
+    /**
+     * Verifica se a posição (x, y) está dentro dos limites da grelha.
+     * @param x X pos
+     * @param y Y pos
+     * @return boolean
+     */
+    public boolean isPositionValid(int x, int y) {
+        // Verifica limites X (largura) e limites Y (altura)
+        return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     /**
