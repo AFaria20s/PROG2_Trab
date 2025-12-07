@@ -17,9 +17,7 @@ public class Sheep extends Organism implements Movable, Eater, Reproducible {
 
     @Override
     public String getDisplaySymbol() {
-        if (energy > 25) return "O";
-        if (energy > 8) return "o";
-        return "o.";
+        return "o";
     }
 
     @Override
@@ -30,7 +28,7 @@ public class Sheep extends Organism implements Movable, Eater, Reproducible {
         checkMaxAge();
         this.energy -= SimulationConfig.getInstance().getSHEEP_ENERGY_COST_STEP();
 
-        if (this.energy <= 0 || !isAlive()) {
+        if (this.energy <= 0) {
             eco.removeOrganism(this);
             return;
         }
@@ -77,10 +75,34 @@ public class Sheep extends Organism implements Movable, Eater, Reproducible {
         SimulationConfig config = SimulationConfig.getInstance();
 
         if (Math.random() > config.getSHEEP_REPRODUCTION_PROB()) return;
+        if (this.energy < config.getSHEEP_REPRODUCTION_COST()) return;
 
+        Organism partner = null;
+
+        List<Position> adj = eco.getAdjacentPositions(getPosition());
+        for (Position p : adj) {
+            Organism target = eco.getOrganismAt(p);
+
+            if (target instanceof Sheep && target.isAlive()) {
+                Sheep sheepPartner = (Sheep) target;
+                if (sheepPartner.getEnergy() >= config.getSHEEP_REPRODUCTION_COST()) {
+                    partner = sheepPartner;
+                    break; // Encontrado o primeiro parceiro elegível
+                }
+            }
+        }
+
+        if (partner == null) return; // Não encontrou parceiro elegível
+
+        // 3. Procurar uma célula vazia adjacente ao organismo atual para o nascimento
         Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
 
         if (spawnPos != null) {
+            // 4. Se encontrou parceiro e local de spawn: Subtrair energia de AMBOS
+            this.energy -= config.getSHEEP_REPRODUCTION_COST();
+            ((Sheep) partner).energy -= config.getSHEEP_REPRODUCTION_COST();
+
+            // 5. Criar a nova Ovelha
             eco.addOrganism(new Sheep(spawnPos));
         }
     }

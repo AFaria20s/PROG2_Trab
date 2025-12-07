@@ -137,9 +137,20 @@ public class Ecosystem {
      * Encontra uma célula vazia vizinha (crucial para reprodução)
      */
     public Position findAdjacentEmptyCell(Position center) {
+        List<Position> emptyPositions = new ArrayList<>();
+
         for (Position p : getAdjacentPositions(center)) {
-            if (getOrganismAt(p) instanceof Empty) return p;
+            if (getOrganismAt(p) instanceof Empty) {
+                emptyPositions.add(p);
+            }
         }
+
+        if (!emptyPositions.isEmpty()) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(emptyPositions.size());
+            return emptyPositions.get(randomIndex);
+        }
+
         return null;
     }
 
