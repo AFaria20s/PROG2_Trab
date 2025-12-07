@@ -2,10 +2,7 @@ package Model.Util;
 
 public class SimulationConfig {
 
-    // --- Instância Unica ---
     private static SimulationConfig instance;
-
-    // Construtor privado para impedir "new SimulationConfig()"
     private SimulationConfig() {}
 
     public static SimulationConfig getInstance() {
@@ -15,70 +12,60 @@ public class SimulationConfig {
         return instance;
     }
 
-    // Temporizador para steps automaticos
-    private int STEPS_PER_SECOND = 1;
+    // --- TEMPO ---
+    private int STEPS_PER_SECOND = 3;
 
-    // Probabilidades de Spawn
-    private double PROB_WOLF = 0.04;
-    private double PROB_SHEEP = 0.09;
-    private double PROB_PLANT = 0.11;
+    // === PROBABILIDADES INICIAIS DE SPAWN (Ajustadas para menos Lobos) ===
+    // Reduzida: Para iniciar com menos Lobos (cerca de 10-15) e dar espaço às Ovelhas.
+    private double PROB_WOLF_SPAWN = 0.035;
+    private double PROB_SHEEP_SPAWN = 0.09;
+    private double PROB_PLANT_SPAWN = 0.20;
 
-    // Regras da Ovelha
-    private int SHEEP_MAX_AGE = 30;
-    private int SHEEP_ENERGY_GAIN = 4;
-    private int SHEEP_ENERGY_COST = 1;
-    private double SHEEP_REPRODUCTION_PROB = 0.50;
+    // === REGRAS DA OVELHA (Ajustadas para Maior Resiliência) ===
+    private int SHEEP_MAX_AGE = 25;
+    private int SHEEP_ENERGY_GAIN_EAT = 10;
+    // Reduzido: Voltar ao custo 2; custo 3 era demasiado penalizador.
+    private int SHEEP_ENERGY_COST_STEP = 2;
+    // Aumentado: Dar maior capacidade de recuperação populacional.
+    private double SHEEP_REPRODUCTION_PROB = 0.07;
+    private int SHEEP_REPRODUCTION_COST = 15;
 
-    // Regras do Lobo
-    private int WOLF_MAX_AGE = 40;
-    private int WOLF_ENERGY_COST = 2;
-    private double PROB_WOLF_MOVE = 0.3;
-    private double PROB_WOLF_EAT = 0.5;
+    // === REGRAS DO LOBO (Mantidas - Dinâmica Predador/Presa OK) ===
+    private int WOLF_MAX_AGE = 30;
+    private int WOLF_ENERGY_GAIN_EAT = 15;
+    private int WOLF_ENERGY_COST_STEP = 2;
+    private double WOLF_REPRODUCTION_PROB = 0.03;
+    private int WOLF_REPRODUCTION_COST = 30;
+    private double WOLF_EAT_PROB = 0.60;
 
-    // Regras da Planta
-    private int PLANT_MAX_AGE = 90;
+    // === REGRAS DA PLANTA (Mantidas - Este ajuste funcionou) ===
+    private int PLANT_MAX_AGE = 100;
+    // Mantido: A planta precisa de alta taxa de regeneração para aguentar o consumo.
+    private double PLANT_REPRODUCTION_PROB = 0.50;
 
-    // Getters
-    public double getPROB_WOLF() { return PROB_WOLF; }
-    public double getPROB_SHEEP() { return PROB_SHEEP; }
-    public int getSHEEP_MAX_AGE() { return SHEEP_MAX_AGE; }
-    public double getSHEEP_REPRODUCTION_PROB() { return SHEEP_REPRODUCTION_PROB; }
-    public double getPROB_PLANT() { return PROB_PLANT; }
-    public int getSHEEP_ENERGY_GAIN() { return SHEEP_ENERGY_GAIN; }
-    public int getWOLF_MAX_AGE() { return WOLF_MAX_AGE; }
-    public int getPLANT_MAX_AGE() {
-        return PLANT_MAX_AGE;
-    }
+    // --- GETTERS ---
     public int getSTEPS_PER_SECOND() { return STEPS_PER_SECOND; }
-    public double getPROB_WOLF_MOVE() { return PROB_WOLF_MOVE; }
-    public int getWOLF_ENERGY_COST() { return WOLF_ENERGY_COST; }
-    public int getSHEEP_ENERGY_COST() { return SHEEP_ENERGY_COST; }
 
-    // Setters
-    public void setSHEEP_REPRODUCTION_PROB(double prob) {
-        this.SHEEP_REPRODUCTION_PROB = prob;
-    }
-    public void setWolfMaxAge(int age) {
-        this.WOLF_MAX_AGE = age;
-    }
-    public void setWOLF_MAX_AGE(int WOLF_MAX_AGE) {
-        this.WOLF_MAX_AGE = WOLF_MAX_AGE;
-    }
-    public void setPROB_WOLF(double PROB_WOLF) {
-        this.PROB_WOLF = PROB_WOLF;
-    }
-    public void setPROB_SHEEP(double PROB_SHEEP) {
-        this.PROB_SHEEP = PROB_SHEEP;
-    }
-    public void setPROB_PLANT(double PROB_PLANT) {
-        this.PROB_PLANT = PROB_PLANT;
-    }
-    public void setSHEEP_MAX_AGE(int SHEEP_MAX_AGE) {
-        this.SHEEP_MAX_AGE = SHEEP_MAX_AGE;
-    }
-    public void setSHEEP_ENERGY_GAIN(int SHEEP_ENERGY_GAIN) {
-        this.SHEEP_ENERGY_GAIN = SHEEP_ENERGY_GAIN;
-    }
-    public void setPLANT_MAX_AGE(int PLANT_MAX_AGE) { this.PLANT_MAX_AGE = PLANT_MAX_AGE;}
-    public void setSTEPS_PER_SECOND(int STEPS_PER_SECOND) {this.STEPS_PER_SECOND = STEPS_PER_SECOND;}
+    public double getPROB_WOLF_SPAWN() { return PROB_WOLF_SPAWN; }
+    public double getPROB_SHEEP_SPAWN() { return PROB_SHEEP_SPAWN; }
+    public double getPROB_PLANT_SPAWN() { return PROB_PLANT_SPAWN; }
+
+    public int getSHEEP_MAX_AGE() { return SHEEP_MAX_AGE; }
+    public int getSHEEP_ENERGY_GAIN_EAT() { return SHEEP_ENERGY_GAIN_EAT; }
+    public int getSHEEP_ENERGY_COST_STEP() { return SHEEP_ENERGY_COST_STEP; }
+    public double getSHEEP_REPRODUCTION_PROB() { return SHEEP_REPRODUCTION_PROB; }
+    public int getSHEEP_REPRODUCTION_COST() { return SHEEP_REPRODUCTION_COST; }
+
+    public int getWOLF_MAX_AGE() { return WOLF_MAX_AGE; }
+    public int getWOLF_ENERGY_GAIN_EAT() { return WOLF_ENERGY_GAIN_EAT; }
+    public int getWOLF_ENERGY_COST_STEP() { return WOLF_ENERGY_COST_STEP; }
+    public double getWOLF_REPRODUCTION_PROB() { return WOLF_REPRODUCTION_PROB; }
+    public int getWOLF_REPRODUCTION_COST() { return WOLF_REPRODUCTION_COST; }
+    public double getWOLF_EAT_PROB() { return WOLF_EAT_PROB; }
+
+    public int getPLANT_MAX_AGE() { return PLANT_MAX_AGE; }
+    public double getPLANT_REPRODUCTION_PROB() { return PLANT_REPRODUCTION_PROB; }
+
+    // --- SETTERS ---
+    public void setSTEPS_PER_SECOND(int steps) { this.STEPS_PER_SECOND = steps; }
 }
