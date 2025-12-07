@@ -1,5 +1,7 @@
 package Model.OrganismActions;
 
+import Model.Ecosystem.Ecosystem;
+
 public interface Movable {
-    boolean move();
+    void move(Ecosystem eco);
 }

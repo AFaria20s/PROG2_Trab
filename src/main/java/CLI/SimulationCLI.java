@@ -40,11 +40,6 @@ public class SimulationCLI {
                     @Override
                     public void run() {
                         ecosystem.simulateStep();
-
-                        if (ecosystem.getStepCount() == 4) {
-                            SimulationConfig.getInstance().setSTEPS_PER_SECOND(10);
-                            scheduleSimulation();
-                        }
                     }
                 },
                 period, // Start delay

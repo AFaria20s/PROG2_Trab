@@ -26,10 +26,14 @@ public class SimulationConfig {
     // Regras da Ovelha
     private int SHEEP_MAX_AGE = 30;
     private int SHEEP_ENERGY_GAIN = 4;
+    private int SHEEP_ENERGY_COST = 1;
     private double SHEEP_REPRODUCTION_PROB = 0.50;
 
     // Regras do Lobo
     private int WOLF_MAX_AGE = 40;
+    private int WOLF_ENERGY_COST = 2;
+    private double PROB_WOLF_MOVE = 0.3;
+    private double PROB_WOLF_EAT = 0.5;
 
     // Regras da Planta
     private int PLANT_MAX_AGE = 90;
@@ -46,6 +50,9 @@ public class SimulationConfig {
         return PLANT_MAX_AGE;
     }
     public int getSTEPS_PER_SECOND() { return STEPS_PER_SECOND; }
+    public double getPROB_WOLF_MOVE() { return PROB_WOLF_MOVE; }
+    public int getWOLF_ENERGY_COST() { return WOLF_ENERGY_COST; }
+    public int getSHEEP_ENERGY_COST() { return SHEEP_ENERGY_COST; }
 
     // Setters
     public void setSHEEP_REPRODUCTION_PROB(double prob) {
