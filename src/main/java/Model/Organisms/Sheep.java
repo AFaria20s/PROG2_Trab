@@ -1,80 +1,35 @@
 package Model.Organisms;
 
 import Model.Ecosystem.Ecosystem;
-import Model.OrganismActions.Eater;
-import Model.OrganismActions.Movable;
-import Model.OrganismActions.Reproducible;
-import Model.Util.OrganismType;
-import Model.Util.Position;
-import Model.Util.SimulationConfig;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import Model.OrganismActions.*;
+import Model.Util.*;
+import java.util.*;
 
 public class Sheep extends Organism implements Movable, Eater, Reproducible {
     private int energy;
 
     public Sheep(Position pos) {
         super(pos, OrganismType.SHEEP);
-        this.energy = (int)(Math.random()*100);;
+        this.energy = (int)(Math.random() * 40) + 10;
     }
+
+    public int getEnergy() { return energy; }
 
     @Override
-    protected int getMaxAgeLimit() {
-        // Vai buscar o valor dinâmico da configuração
-        return SimulationConfig.getInstance().getSHEEP_MAX_AGE();
+    public String getDisplaySymbol() {
+        if (energy > 25) return "O";
+        if (energy > 8) return "o";
+        return "o.";
     }
 
-    // --- Lógica de Movimento ---
-    @Override
-    public void move(Ecosystem eco) {
-        Position currentPos = getPosition();
-        // A função getAdjacentPositions(Position) já foi corrigida
-        List<Position> adjacentPositions = eco.getAdjacentPositions(currentPos);
-
-        // Lista de células para onde a ovelha pode mover-se
-        List<Position> validDestinations = new ArrayList<>();
-
-        // 1. Filtrar as posições adjacentes
-        for (Position p : adjacentPositions) {
-            Organism target = eco.getOrganismAt(p.getX(), p.getY());
-
-            // A ovelha move-se para Empty (Vazio) OU Plant (Comida)
-            if (target instanceof Empty || target.getType() == OrganismType.PLANT) {
-                validDestinations.add(p);
-            }
-            // A ovelha evita Lobos (mas neste modelo não os evita ativamente, apenas não se move para lá).
-            // Se for outro organismo (Wolf ou Sheep), não é adicionado a validDestinations.
-        }
-
-        // 2. Escolher o destino e mover-se
-        if (!validDestinations.isEmpty()) {
-            Random random = new Random();
-            int randomIndex = random.nextInt(validDestinations.size());
-            Position newPos = validDestinations.get(randomIndex);
-
-            // O Ecosystem atualiza a grelha e a posição interna da ovelha
-            eco.moveOrganism(this, newPos.getX(), newPos.getY());
-        }
-        // Se validDestinations estiver vazia, a ovelha fica parada (comportamento seguro).
-    }
-
-    // --- Ciclo de Vida do Passo (Orquestrador) ---
     @Override
     public void step(Ecosystem eco) {
         if (!isAlive()) return;
 
         increaseAge();
         checkMaxAge();
+        this.energy -= SimulationConfig.getInstance().getSHEEP_ENERGY_COST_STEP();
 
-        // O custo da ovelha
-        int cost = SimulationConfig.getInstance().getSHEEP_ENERGY_COST();
-
-        this.energy -= cost;
-
-        // 2. Morte por Fome/Velhice
-        // Verifica se o checkMaxAge() a matou (isAlive = false) ou se a energia chegou a zero
         if (this.energy <= 0 || !isAlive()) {
             eco.removeOrganism(this);
             return;
@@ -85,16 +40,53 @@ public class Sheep extends Organism implements Movable, Eater, Reproducible {
         reproduce(eco);
     }
 
-    // --- Lógica de Alimentação (A ser implementada) ---
     @Override
-    public void eat(Ecosystem eco) {
-        // Lógica de comer plantas: ganha energia e remove a planta da célula
+    public void move(Ecosystem eco) {
+        List<Position> adj = eco.getAdjacentPositions(getPosition());
+        List<Position> valid = new ArrayList<>();
 
+        for (Position p : adj) {
+            // Ovelha só se move para vazio (para não pisar plantas, come por vizinhança)
+            if (eco.getOrganismAt(p) instanceof Empty) {
+                valid.add(p);
+            }
+        }
+
+        if (!valid.isEmpty()) {
+            Position newPos = valid.get(new Random().nextInt(valid.size()));
+            eco.moveOrganism(this, newPos.getX(), newPos.getY());
+        }
     }
 
-    // --- Lógica de Reprodução (A ser implementada) ---
+    @Override
+    public void eat(Ecosystem eco) {
+        List<Position> adj = eco.getAdjacentPositions(getPosition());
+        SimulationConfig config = SimulationConfig.getInstance();
+
+        for (Position p : adj) {
+            if (eco.getOrganismAt(p).getType() == OrganismType.PLANT) {
+                this.energy += config.getSHEEP_ENERGY_GAIN_EAT();
+                eco.removeOrganismAt(p); // Remove a planta
+                return;
+            }
+        }
+    }
+
     @Override
     public void reproduce(Ecosystem eco) {
-        // Lógica de encontrar parceiro, aplicar probabilidade e spawnar bebé
+        SimulationConfig config = SimulationConfig.getInstance();
+
+        if (Math.random() > config.getSHEEP_REPRODUCTION_PROB()) return;
+
+        Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
+
+        if (spawnPos != null) {
+            eco.addOrganism(new Sheep(spawnPos));
+        }
+    }
+
+    @Override
+    protected int getMaxAgeLimit() {
+        return SimulationConfig.getInstance().getSHEEP_MAX_AGE();
     }
 }

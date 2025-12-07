@@ -1,21 +1,21 @@
 package Model.Util;
 
 public enum OrganismType {
-    PLANT('*', "Plant"),
-    SHEEP('O', "Sheep"),
-    WOLF('w', "Wolf"),
-    EMPTY('.', "Empty")
+    PLANT("*", "Plant"),
+    SHEEP("O", "Sheep"),
+    WOLF("w", "Wolf"),
+    EMPTY(".", "Empty")
     ;
 
-    final char symbol;
+    final String symbol;
     final String type;
 
-    OrganismType(char symbol, String type) {
+    OrganismType(String symbol, String type) {
         this.symbol = symbol;
         this.type = type;
     }
 
-    public char getSymbol() {
+    public String getSymbol() {
         return this.symbol;
     }
 
