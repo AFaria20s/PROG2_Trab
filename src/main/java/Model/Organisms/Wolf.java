@@ -17,9 +17,7 @@ public class Wolf extends Organism implements Movable, Eater, Reproducible {
 
     @Override
     public String getDisplaySymbol() {
-        if (energy > 40) return "W"; // Forte
-        if (energy > 15) return "w"; // Normal
-        return "w.";                 // Faminto
+        return "w";
     }
 
     @Override
@@ -88,10 +86,34 @@ public class Wolf extends Organism implements Movable, Eater, Reproducible {
         if (Math.random() > config.getWOLF_REPRODUCTION_PROB()) return;
         if (this.energy < config.getWOLF_REPRODUCTION_COST()) return;
 
+        // --- Lógica de Reprodução Sexuada ---
+
+        Organism partner = null;
+        Position partnerPos = null;
+
+        // 2. Procurar um parceiro adjacente
+        List<Position> adj = eco.getAdjacentPositions(getPosition());
+        for (Position p : adj) {
+            Organism target = eco.getOrganismAt(p);
+
+            if (target instanceof Wolf && target.isAlive()) {
+                Wolf wolfPartner = (Wolf) target;
+                if (wolfPartner.getEnergy() >= config.getWOLF_REPRODUCTION_COST()) {
+                    partner = wolfPartner;
+                    partnerPos = p;
+                    break; // Encontrado o primeiro parceiro elegível
+                }
+            }
+        }
+
+        if (partner == null) return; // Não encontrou parceiro elegível
+
         Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
 
         if (spawnPos != null) {
             this.energy -= config.getWOLF_REPRODUCTION_COST();
+            ((Wolf) partner).energy -= config.getWOLF_REPRODUCTION_COST();
+            System.out.println("REPRODUÇÃO FEITA!");
             eco.addOrganism(new Wolf(spawnPos));
         }
     }

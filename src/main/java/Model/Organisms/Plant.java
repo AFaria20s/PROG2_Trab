@@ -13,7 +13,12 @@ public class Plant extends Organism implements Reproducible {
 
     @Override
     public void step(Ecosystem eco) {
+        if(!isAlive()) return;
 
+        increaseAge();
+        checkMaxAge();
+
+        reproduce(eco);
     }
 
     @Override
@@ -23,6 +28,12 @@ public class Plant extends Organism implements Reproducible {
 
     @Override
     public void reproduce(Ecosystem eco) {
+        // Se nao estiver dentro da probabilidade, nao faz nada
+        if(Math.random()>SimulationConfig.getInstance().getPLANT_REPRODUCTION_PROB()) return;
+        Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
 
+        if(spawnPos!=null) {
+            eco.addOrganism(new Plant(spawnPos));
+        }
     }
 }
