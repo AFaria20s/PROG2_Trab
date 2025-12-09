@@ -7,6 +7,7 @@ import Model.Util.Position;
 import Model.Util.SimulationConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -14,10 +15,11 @@ public class Ecosystem {
     private final int width;
     private final int height;
     private int stepCount;
-    private Random random;
+    private final Random random;
 
-    private Organism[][] grid;
-    private List<Organism> organisms;
+    // A Grid é a "verdade" espacial, a Lista é a "verdade" para iteração
+    private final Organism[][] grid;
+    private final List<Organism> organisms;
 
     public Ecosystem(int width, int height) {
         this.width = width;
@@ -30,165 +32,157 @@ public class Ecosystem {
 
     public void simulateStep() {
         stepCount++;
-        // Cópia para evitar erros ao nascer/morrer durante o loop
+        // Cópia para evitar ConcurrentModificationException
         List<Organism> organismsCopy = new ArrayList<>(this.organisms);
 
+        // Baralhar para não haver vantagem de ordem na lista (ex: quem nasce primeiro move primeiro)
+        Collections.shuffle(organismsCopy);
+
         for (Organism org : organismsCopy) {
+            // Verifica se ainda está vivo antes de agir (pode ter sido comido neste turno)
             if (org.isAlive()) {
                 org.step(this);
             }
         }
 
-        printGrid();
+        // Limpeza de mortos da lista principal acontece via removeOrganism durante o loop
         printStats();
+        printGrid();
     }
 
-    // --- GESTÃO DE ORGANISMOS ---
-
     /**
-     * Adicionar recém-nascidos durante a simulação
+     * Imprime o estado atual da grelha na consola, usando os símbolos de display.
      */
+    public void printGrid() {
+        // Imprime a borda superior
+        System.out.print("+");
+        for (int i = 0; i < this.width; i++) System.out.print("-");
+        System.out.println("+");
+
+        // Itera sobre a grelha e imprime os organismos
+        for (int y = 0; y < this.height; y++) {
+            System.out.print("|");
+            for(int x = 0; x < this.width; x++) {
+                Organism o = grid[y][x];
+                // Assume que getDisplaySymbol() retorna "w", "o", "p" ou o símbolo de vazio (" ")
+                System.out.print(o.getDisplaySymbol());
+            }
+            System.out.println("|");
+        }
+
+        // Imprime a borda inferior
+        System.out.print("+");
+        for (int i = 0; i < this.width; i++) System.out.print("-");
+        System.out.println("+");
+    }
+
+    // --- CRUD DE ORGANISMOS (CRÍTICO PARA SINCRONIA) ---
+
     public void addOrganism(Organism org) {
-        if (isPositionValid(org.getPosition().getX(), org.getPosition().getY())) {
-            this.grid[org.getPosition().getY()][org.getPosition().getX()] = org;
+        Position pos = org.getPosition();
+        if (isPositionValid(pos)) {
+            // Se já houver algo lá que não seja Empty, não sobrepomos sem lógica
+            // Mas assumimos que o chamador (reproduce) já verificou espaço vazio
+            this.grid[pos.getY()][pos.getX()] = org;
             this.organisms.add(org);
         }
     }
 
-    /**
-     * Remoção.
-     */
     public void removeOrganism(Organism org) {
-        if (org == null || !org.isAlive()) return;
+        if (org == null || !org.isAlive()) return; // Já está morto/removido
+
+        org.die(); // Marca flag interna como morto
+        this.organisms.remove(org); // Remove da lista
 
         Position pos = org.getPosition();
-        org.die(); // Marca como morto
-
-        // Limpa a grelha
-        if (isPositionValid(pos.getX(), pos.getY())) {
+        // Remove da grid apenas se o organismo na grid for de facto este
+        // (Previne bugs onde removemos um organismo que já se moveu ou foi substituído)
+        if (isPositionValid(pos) && this.grid[pos.getY()][pos.getX()] == org) {
             this.grid[pos.getY()][pos.getX()] = new Empty(pos, OrganismType.EMPTY);
         }
     }
 
-    /**
-     * Remove por posição
-     */
     public void removeOrganismAt(Position pos) {
-        Organism toRemove = getOrganismAt(pos);
-        // Só remove se não for Empty e estiver vivo
-        if (toRemove != null && !(toRemove instanceof Empty)) {
-            removeOrganism(toRemove);
+        Organism target = getOrganismAt(pos);
+        if (target != null && !(target instanceof Empty)) {
+            removeOrganism(target);
         }
     }
 
-    public void moveOrganism(Organism org, int newX, int newY) {
+    public void moveOrganism(Organism org, Position newPos) {
         Position oldPos = org.getPosition();
 
-        // Limpa a casa velha
+        // 1. Limpa posição antiga
         this.grid[oldPos.getY()][oldPos.getX()] = new Empty(oldPos, OrganismType.EMPTY);
 
-        // Atualiza e coloca na casa nova
-        org.setPosition(new Position(newX, newY));
-        this.grid[newY][newX] = org;
+        // 2. Atualiza referência interna
+        org.setPosition(newPos);
+
+        // 3. Ocupa nova posição
+        this.grid[newPos.getY()][newPos.getX()] = org;
     }
 
-    // --- UTILITÁRIOS E INIT ---
-    public void initGrid() {
-        this.organisms.clear();
-        for (int y = 0; y < this.height; y++) {
-            for (int x = 0; x < this.width; x++) {
-                double roll = random.nextDouble();
-                Organism newOrg = generateOrganism(new Position(x,y), roll);
-
-                if (newOrg != null) {
-                    this.grid[y][x] = newOrg;
-                    this.organisms.add(newOrg);
-                } else {
-                    this.grid[y][x] = new Empty(new Position(x,y), OrganismType.EMPTY);
-                }
-            }
-        }
-    }
-
-    private Organism generateOrganism(Position pos, double roll) {
-        SimulationConfig config = SimulationConfig.getInstance();
-        if (roll < config.getPROB_WOLF_SPAWN()) return new Wolf(pos);
-        else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN()) return new Sheep(pos);
-        else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN() + config.getPROB_PLANT_SPAWN()) return new Plant(pos);
-        return null;
-    }
+    // --- GETTERS E HELPERS ---
 
     public Organism getOrganismAt(Position pos) {
-        if (!isPositionValid(pos.getX(), pos.getY())) return new Empty(pos, OrganismType.EMPTY);
+        if (!isPositionValid(pos)) return null;
         return grid[pos.getY()][pos.getX()];
     }
 
     public List<Position> getAdjacentPositions(Position pos) {
         List<Position> adjacent = new ArrayList<>();
         for (Direction dir : Direction.values()) {
-            int newX = pos.getX() + dir.getDx();
-            int newY = pos.getY() + dir.getDy();
-            if (isPositionValid(newX, newY)) adjacent.add(new Position(newX, newY));
+            Position newPos = new Position(pos.getX() + dir.getDx(), pos.getY() + dir.getDy());
+            if (isPositionValid(newPos)) adjacent.add(newPos);
         }
         return adjacent;
     }
 
-    /**
-     * Encontra uma célula vazia vizinha (crucial para reprodução)
-     */
     public Position findAdjacentEmptyCell(Position center) {
         List<Position> emptyPositions = new ArrayList<>();
-
         for (Position p : getAdjacentPositions(center)) {
-            if (getOrganismAt(p) instanceof Empty) {
+            Organism o = getOrganismAt(p);
+            if (o == null || o instanceof Empty) { // Null check safe
                 emptyPositions.add(p);
             }
         }
-
-        if (!emptyPositions.isEmpty()) {
-            Random random = new Random();
-            int randomIndex = random.nextInt(emptyPositions.size());
-            return emptyPositions.get(randomIndex);
-        }
-
-        return null;
+        if (emptyPositions.isEmpty()) return null;
+        return emptyPositions.get(random.nextInt(emptyPositions.size()));
     }
 
-    public int getOrganismCountByType(OrganismType type) {
-        int count = 0;
-        for (Organism org : organisms) {
-            if(org.isAlive() && org.getType().equals(type)) count++;
-        }
-        return count;
+    private boolean isPositionValid(Position p) {
+        return p.getX() >= 0 && p.getX() < width && p.getY() >= 0 && p.getY() < height;
     }
 
-    public boolean isPositionValid(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
+    // --- INIT ---
 
-    private void printGrid() {
-        System.out.print("+");
-        for (int i = 0; i < this.width; i++) System.out.print("-");
-        System.out.println("+");
+    public void initGrid() {
+        this.organisms.clear();
+        SimulationConfig config = SimulationConfig.getInstance();
 
         for (int y = 0; y < this.height; y++) {
-            System.out.print("|");
-            for(int x = 0; x < this.width; x++) {
-                Organism o = grid[y][x];
-                // Usa o método dinâmico para mostrar energia
-                System.out.print(o != null ? o.getDisplaySymbol() : " ");
+            for (int x = 0; x < this.width; x++) {
+                Position pos = new Position(x, y);
+                double roll = random.nextDouble();
+                Organism newOrg;
+
+                if (roll < config.getPROB_WOLF_SPAWN()) newOrg = new Wolf(pos);
+                else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN()) newOrg = new Sheep(pos);
+                else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN() + config.getPROB_PLANT_SPAWN()) newOrg = new Plant(pos);
+                else newOrg = new Empty(pos, OrganismType.EMPTY);
+
+                this.grid[y][x] = newOrg;
+                if (!(newOrg instanceof Empty)) {
+                    this.organisms.add(newOrg);
+                }
             }
-            System.out.println("|");
         }
-        System.out.print("+");
-        for (int i = 0; i < this.width; i++) System.out.print("-");
-        System.out.println("+");
     }
 
     private void printStats() {
-        int w = getOrganismCountByType(OrganismType.WOLF);
-        int s = getOrganismCountByType(OrganismType.SHEEP);
-        int p = getOrganismCountByType(OrganismType.PLANT);
-        System.out.println("Step: " + stepCount + " | Wolf: " + w + " | Sheep: " + s + " | Plant: " + p + " | Total: " + (w+s+p));
+        long w = organisms.stream().filter(o -> o instanceof Wolf).count();
+        long s = organisms.stream().filter(o -> o instanceof Sheep).count();
+        long p = organisms.stream().filter(o -> o instanceof Plant).count();
+        System.out.printf("Step: %d | Wolf: %d | Sheep: %d | Plant: %d%n", stepCount, w, s, p);
     }
 }

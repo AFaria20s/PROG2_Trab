@@ -10,7 +10,9 @@ public class SimulationCLI {
     private Ecosystem ecosystem;
     private Timer timer;
 
-    public SimulationCLI(int gridX, int gridY) {
+    public SimulationCLI() {
+        int gridX = SimulationConfig.getInstance().getWIDTH();
+        int gridY = SimulationConfig.getInstance().getHEIGHT();
         ecosystem = new Ecosystem(gridX, gridY);
     }
 
