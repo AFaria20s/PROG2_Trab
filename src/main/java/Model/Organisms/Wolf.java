@@ -1,125 +1,41 @@
 package Model.Organisms;
 
-import Model.Ecosystem.Ecosystem;
-import Model.OrganismActions.*;
-import Model.Util.*;
-import java.util.*;
+import Model.Util.OrganismType;
+import Model.Util.Position;
+import Model.Util.SimulationConfig;
 
-public class Wolf extends Organism implements Movable, Eater, Reproducible {
-    private int energy;
+public class Wolf extends Animal {
 
     public Wolf(Position pos) {
-        super(pos, OrganismType.WOLF);
-        this.energy = (int)(Math.random() * 50) + 20; // Energia inicial varia
-    }
-
-    public int getEnergy() { return energy; }
-
-    @Override
-    public String getDisplaySymbol() {
-        return "w";
+        super(pos, OrganismType.WOLF, 50); // 50 energia inicial fixa ou random
     }
 
     @Override
-    public void step(Ecosystem eco) {
-        if (!isAlive()) return;
+    protected int getMaxAgeLimit() { return SimulationConfig.getInstance().getWOLF_MAX_AGE(); }
 
-        increaseAge();
-        checkMaxAge();
-        this.energy -= SimulationConfig.getInstance().getWOLF_ENERGY_COST_STEP();
+    @Override
+    protected int getEnergyCostPerStep() { return SimulationConfig.getInstance().getWOLF_ENERGY_COST_STEP(); }
 
-        if (this.energy <= 0 || !isAlive()) {
-            eco.removeOrganism(this);
-            return;
-        }
-
-        move(eco);
-        eat(eco);
-        reproduce(eco);
+    @Override
+    protected boolean canEat(Organism other) {
+        // Lobo come ovelha. Adicione && Math.random() < prob se quiser falhar ataques
+        return other.getType() == OrganismType.SHEEP;
     }
 
     @Override
-    public void move(Ecosystem eco) {
-        List<Position> adj = eco.getAdjacentPositions(getPosition());
-        List<Position> valid = new ArrayList<>();
-        int wolfNeighbors = 0;
-
-        for (Position p : adj) {
-            Organism target = eco.getOrganismAt(p);
-            // Evita Plantas para não as pisar sem querer
-            if (target instanceof Empty || target.getType() == OrganismType.SHEEP) {
-                valid.add(p);
-            } else if (target.getType() == OrganismType.WOLF) {
-                wolfNeighbors++;
-            }
-        }
-
-        // Se só tem lobos à volta, fica parado
-        if (valid.isEmpty() && wolfNeighbors > 0) return;
-
-        if (!valid.isEmpty()) {
-            Position newPos = valid.get(new Random().nextInt(valid.size()));
-            eco.moveOrganism(this, newPos.getX(), newPos.getY());
-        }
-    }
+    protected int getEnergyGainFromFood() { return SimulationConfig.getInstance().getWOLF_ENERGY_GAIN_EAT(); }
 
     @Override
-    public void eat(Ecosystem eco) {
-        List<Position> adj = eco.getAdjacentPositions(getPosition());
-        SimulationConfig config = SimulationConfig.getInstance();
-
-        for (Position p : adj) {
-            if (eco.getOrganismAt(p).getType() == OrganismType.SHEEP) {
-                if (Math.random() < config.getWOLF_EAT_PROB()) {
-                    this.energy += config.getWOLF_ENERGY_GAIN_EAT();
-                    eco.removeOrganismAt(p); // Come a ovelha
-                    return; // Só come uma por turno
-                }
-            }
-        }
-    }
+    protected double getReproductionProbability() { return SimulationConfig.getInstance().getWOLF_REPRODUCTION_PROB(); }
 
     @Override
-    public void reproduce(Ecosystem eco) {
-        SimulationConfig config = SimulationConfig.getInstance();
-
-        if (Math.random() > config.getWOLF_REPRODUCTION_PROB()) return;
-        if (this.energy < config.getWOLF_REPRODUCTION_COST()) return;
-
-        // --- Lógica de Reprodução Sexuada ---
-
-        Organism partner = null;
-        Position partnerPos = null;
-
-        // 2. Procurar um parceiro adjacente
-        List<Position> adj = eco.getAdjacentPositions(getPosition());
-        for (Position p : adj) {
-            Organism target = eco.getOrganismAt(p);
-
-            if (target instanceof Wolf && target.isAlive()) {
-                Wolf wolfPartner = (Wolf) target;
-                if (wolfPartner.getEnergy() >= config.getWOLF_REPRODUCTION_COST()) {
-                    partner = wolfPartner;
-                    partnerPos = p;
-                    break; // Encontrado o primeiro parceiro elegível
-                }
-            }
-        }
-
-        if (partner == null) return; // Não encontrou parceiro elegível
-
-        Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
-
-        if (spawnPos != null) {
-            this.energy -= config.getWOLF_REPRODUCTION_COST();
-            ((Wolf) partner).energy -= config.getWOLF_REPRODUCTION_COST();
-            System.out.println("REPRODUÇÃO FEITA!");
-            eco.addOrganism(new Wolf(spawnPos));
-        }
-    }
+    protected int getReproductionCost() { return SimulationConfig.getInstance().getWOLF_REPRODUCTION_COST(); }
 
     @Override
-    protected int getMaxAgeLimit() {
-        return SimulationConfig.getInstance().getWOLF_MAX_AGE();
+    protected int getMinEnergyToReproduce() { return SimulationConfig.getInstance().getWOLF_REPRODUCTION_COST(); }
+
+    @Override
+    protected Animal createOffspring(Position pos) {
+        return new Wolf(pos);
     }
 }

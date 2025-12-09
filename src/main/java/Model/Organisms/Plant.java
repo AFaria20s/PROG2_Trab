@@ -1,22 +1,20 @@
 package Model.Organisms;
 
 import Model.Ecosystem.Ecosystem;
-import Model.OrganismActions.Reproducible;
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
 
-public class Plant extends Organism implements Reproducible {
+public class Plant extends Organism {
+
     public Plant(Position pos) {
         super(pos, OrganismType.PLANT);
     }
 
     @Override
     public void step(Ecosystem eco) {
+        updateAge(eco);
         if(!isAlive()) return;
-
-        increaseAge();
-        checkMaxAge();
 
         reproduce(eco);
     }
@@ -26,13 +24,11 @@ public class Plant extends Organism implements Reproducible {
         return SimulationConfig.getInstance().getPLANT_MAX_AGE();
     }
 
-    @Override
-    public void reproduce(Ecosystem eco) {
-        // Se nao estiver dentro da probabilidade, nao faz nada
-        if(Math.random()>SimulationConfig.getInstance().getPLANT_REPRODUCTION_PROB()) return;
-        Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
+    private void reproduce(Ecosystem eco) {
+        if (Math.random() > SimulationConfig.getInstance().getPLANT_REPRODUCTION_PROB()) return;
 
-        if(spawnPos!=null) {
+        Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
+        if (spawnPos != null) {
             eco.addOrganism(new Plant(spawnPos));
         }
     }

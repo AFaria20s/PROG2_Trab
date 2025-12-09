@@ -20,23 +20,17 @@ public abstract class Organism {
     public abstract void step(Ecosystem eco);
     protected abstract int getMaxAgeLimit();
 
-    /**
-     * Retorna o símbolo visual. Classes com energia podem sobrescrever isto.
-     */
-    public String getDisplaySymbol() {
-        return type.getSymbol();
+    public void updateAge(Ecosystem eco) {
+        this.age++;
+        if (this.age > getMaxAgeLimit()) {
+            eco.removeOrganism(this);
+        }
     }
 
-    public void increaseAge() { this.age++; }
-
-    public void checkMaxAge() {
-        if (this.age > getMaxAgeLimit()) die();
-    }
-
-    public void die() { this.alive = false; }
-    public boolean isAlive() { return alive; }
-    public OrganismType getType() { return type; }
     public Position getPosition() { return position; }
-    public void setPosition(Position pos) { this.position = pos; }
-    public int getAge() { return age; }
+    public void setPosition(Position position) { this.position = position; }
+    public boolean isAlive() { return alive; }
+    public void die() { this.alive = false; }
+    public OrganismType getType() { return type; }
+    public String getDisplaySymbol() { return type.getSymbol(); }
 }
