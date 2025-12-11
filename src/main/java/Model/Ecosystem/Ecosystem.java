@@ -35,19 +35,29 @@ public class Ecosystem {
         // Cópia para evitar ConcurrentModificationException
         List<Organism> organismsCopy = new ArrayList<>(this.organisms);
 
-        // Baralhar para não haver vantagem de ordem na lista (ex: quem nasce primeiro move primeiro)
+        // Baralhar para não haver vantagem de ordem na lista
         Collections.shuffle(organismsCopy);
 
         for (Organism org : organismsCopy) {
-            // Verifica se ainda está vivo antes de agir (pode ter sido comido neste turno)
+            // Verifica se ainda está vivo antes de agir
             if (org.isAlive()) {
                 org.step(this);
             }
         }
 
         // Limpeza de mortos da lista principal acontece via removeOrganism durante o loop
-        printStats();
+        //printStats();
         printGrid();
+    }
+
+    public int getOrganismCountByType(OrganismType type) {
+        int count = 0;
+        for (Organism o : organisms) {
+            if(o.getType().equals(type)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -64,7 +74,6 @@ public class Ecosystem {
             System.out.print("|");
             for(int x = 0; x < this.width; x++) {
                 Organism o = grid[y][x];
-                // Assume que getDisplaySymbol() retorna "w", "o", "p" ou o símbolo de vazio (" ")
                 System.out.print(o.getDisplaySymbol());
             }
             System.out.println("|");
@@ -76,7 +85,7 @@ public class Ecosystem {
         System.out.println("+");
     }
 
-    // --- CRUD DE ORGANISMOS (CRÍTICO PARA SINCRONIA) ---
+    // --- CRUD DE ORGANISMOS ---
 
     public void addOrganism(Organism org) {
         Position pos = org.getPosition();
