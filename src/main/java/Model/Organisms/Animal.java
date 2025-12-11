@@ -48,9 +48,6 @@ public abstract class Animal extends Organism {
 
         for (Position p : adjacent) {
             Organism target = eco.getOrganismAt(p);
-            // Move-se para Empty. Ovelhas e Lobos comportam-se de forma similar aqui:
-            // procuram espaço livre. Se quiser lógica complexa (lobo persegue),
-            // pode fazer @Override deste método na classe Wolf.
             if (target instanceof Empty) {
                 validMoves.add(p);
             }
