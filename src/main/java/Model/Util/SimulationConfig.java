@@ -18,7 +18,7 @@ public class SimulationConfig {
     private int HEIGHT = 15;
 
     // --- TEMPO ---
-    private int STEPS_PER_SECOND = 1;
+    private int STEPS_PER_SECOND = 20;
 
     // === PROBABILIDADES INICIAIS DE SPAWN ===
     private double PROB_WOLF_SPAWN = 0.035;

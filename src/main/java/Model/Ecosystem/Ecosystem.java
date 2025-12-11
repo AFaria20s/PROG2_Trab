@@ -50,6 +50,16 @@ public class Ecosystem {
         printGrid();
     }
 
+    public int getOrganismCountByType(OrganismType type) {
+        int count = 0;
+        for (Organism o : organisms) {
+            if(o.getType().equals(type)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Imprime o estado atual da grelha na consola, usando os símbolos de display.
      */
