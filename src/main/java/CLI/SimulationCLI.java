@@ -4,7 +4,6 @@ import Model.Ecosystem.Ecosystem;
 import Model.Util.OrganismType;
 import Model.Util.SimulationConfig;
 
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,16 +34,16 @@ public class SimulationCLI {
      * Opção 2: Correr N Passos (Automático, com delay)
      */
     public void runNSteps(int n) {
-        stopSimulation();
-        System.out.println("--- Running for " + n + " steps ---");
+        if(n < 0) return;
+        stopSimulation(); // Garante que nenhum timer anterior está ativo
+        System.out.println("--- Fast Forwarding " + n + " steps ---");
         int stepsCount = 0;
 
-        while(stepsCount<n) {
+        while(stepsCount < n) {
             ecosystem.simulateStep();
             stepsCount++;
         }
         System.out.println("--- Finished " + n + " steps ---");
-        stopSimulation(); // Cancela o timer
     }
 
     /**
