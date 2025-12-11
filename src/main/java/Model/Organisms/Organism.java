@@ -13,7 +13,7 @@ public abstract class Organism {
     public Organism(Position pos, OrganismType type) {
         this.position = pos;
         this.type = type;
-        this.age = 0;
+        this.age = 1;
         this.alive = true;
     }
 
@@ -33,4 +33,7 @@ public abstract class Organism {
     public void die() { this.alive = false; }
     public OrganismType getType() { return type; }
     public String getDisplaySymbol() { return type.getSymbol(); }
+    public int getAge() {
+        return age;
+    }
 }

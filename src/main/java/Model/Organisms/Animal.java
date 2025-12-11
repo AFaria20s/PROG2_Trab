@@ -97,10 +97,10 @@ public abstract class Animal extends Organism {
 
         if (partner == null) return;
 
-        // 2. Encontrar Espaço
+        // Encontrar Espaço
         Position spawnPos = eco.findAdjacentEmptyCell(getPosition());
 
-        // 3. Criar Filho
+        // Criar Filho
         if (spawnPos != null) {
             this.energy -= getReproductionCost();
             partner.energy -= getReproductionCost();

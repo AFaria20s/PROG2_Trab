@@ -14,8 +14,8 @@ public class SimulationConfig {
 
     // --- GRID ---
     // Default values
-    private int WIDTH = 30;
-    private int HEIGHT = 30;
+    private int WIDTH = 60;
+    private int HEIGHT = 15;
 
     // --- TEMPO ---
     private int STEPS_PER_SECOND = 1;
@@ -42,8 +42,8 @@ public class SimulationConfig {
     private double WOLF_EAT_PROB = 0.60;
 
     // === REGRAS DA PLANTA ===
-    private int PLANT_MAX_AGE = 1;
-    private double PLANT_REPRODUCTION_PROB = 0.03;
+    private int PLANT_MAX_AGE = 15;
+    private double PLANT_REPRODUCTION_PROB = 0.05;
 
     // --- GETTERS ---
     public int getHEIGHT() {return HEIGHT;}
