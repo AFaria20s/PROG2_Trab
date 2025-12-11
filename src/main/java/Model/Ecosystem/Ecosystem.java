@@ -17,6 +17,9 @@ public class Ecosystem {
     private int stepCount;
     private final Random random;
 
+    // Flag para saber se o ecossistema está ativo (tem vida)
+    private boolean isLifeActive;
+
     // A Grid é a "verdade" espacial, a Lista é a "verdade" para iteração
     private final Organism[][] grid;
     private final List<Organism> organisms;
@@ -28,27 +31,38 @@ public class Ecosystem {
         this.grid = new Organism[height][width];
         this.organisms = new ArrayList<>();
         this.random = new Random();
+        this.isLifeActive = true;
     }
+
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+    public int getStepCount() { return stepCount; }
+    public boolean isLifeActive() { return this.isLifeActive; }
 
     public void simulateStep() {
         stepCount++;
-        // Cópia para evitar ConcurrentModificationException
         List<Organism> organismsCopy = new ArrayList<>(this.organisms);
-
-        // Baralhar para não haver vantagem de ordem na lista
         Collections.shuffle(organismsCopy);
 
+        // Execução dos passos dos organismos
         for (Organism org : organismsCopy) {
-            // Verifica se ainda está vivo antes de agir
             if (org.isAlive()) {
                 org.step(this);
             }
         }
 
-        // Limpeza de mortos da lista principal acontece via removeOrganism durante o loop
-        //printStats();
-        printGrid();
+        // Verifica o estado de vida (lógica apenas)
+        checkLifeStatus();
     }
+
+    private void checkLifeStatus() {
+        boolean hasLife = organisms.stream()
+                .anyMatch(o -> !(o instanceof Empty));
+
+        this.isLifeActive = hasLife;
+    }
+
+    // --- CONTROLO ESTATÍSTICO ---
 
     public int getOrganismCountByType(OrganismType type) {
         int count = 0;
@@ -60,52 +74,23 @@ public class Ecosystem {
         return count;
     }
 
-    /**
-     * Imprime o estado atual da grelha na consola, usando os símbolos de display.
-     */
-    public void printGrid() {
-        // Imprime a borda superior
-        System.out.print("+");
-        for (int i = 0; i < this.width; i++) System.out.print("-");
-        System.out.println("+");
-
-        // Itera sobre a grelha e imprime os organismos
-        for (int y = 0; y < this.height; y++) {
-            System.out.print("|");
-            for(int x = 0; x < this.width; x++) {
-                Organism o = grid[y][x];
-                System.out.print(o.getDisplaySymbol());
-            }
-            System.out.println("|");
-        }
-
-        // Imprime a borda inferior
-        System.out.print("+");
-        for (int i = 0; i < this.width; i++) System.out.print("-");
-        System.out.println("+");
-    }
-
     // --- CRUD DE ORGANISMOS ---
 
     public void addOrganism(Organism org) {
         Position pos = org.getPosition();
         if (isPositionValid(pos)) {
-            // Se já houver algo lá que não seja Empty, não sobrepomos sem lógica
-            // Mas assumimos que o chamador (reproduce) já verificou espaço vazio
             this.grid[pos.getY()][pos.getX()] = org;
             this.organisms.add(org);
         }
     }
 
     public void removeOrganism(Organism org) {
-        if (org == null || !org.isAlive()) return; // Já está morto/removido
+        if (org == null || !org.isAlive()) return;
 
-        org.die(); // Marca flag interna como morto
-        this.organisms.remove(org); // Remove da lista
+        org.die();
+        this.organisms.remove(org);
 
         Position pos = org.getPosition();
-        // Remove da grid apenas se o organismo na grid for de facto este
-        // (Previne bugs onde removemos um organismo que já se moveu ou foi substituído)
         if (isPositionValid(pos) && this.grid[pos.getY()][pos.getX()] == org) {
             this.grid[pos.getY()][pos.getX()] = new Empty(pos, OrganismType.EMPTY);
         }
@@ -120,13 +105,10 @@ public class Ecosystem {
 
     public void moveOrganism(Organism org, Position newPos) {
         Position oldPos = org.getPosition();
-
         // 1. Limpa posição antiga
         this.grid[oldPos.getY()][oldPos.getX()] = new Empty(oldPos, OrganismType.EMPTY);
-
         // 2. Atualiza referência interna
         org.setPosition(newPos);
-
         // 3. Ocupa nova posição
         this.grid[newPos.getY()][newPos.getX()] = org;
     }
@@ -151,7 +133,7 @@ public class Ecosystem {
         List<Position> emptyPositions = new ArrayList<>();
         for (Position p : getAdjacentPositions(center)) {
             Organism o = getOrganismAt(p);
-            if (o == null || o instanceof Empty) { // Null check safe
+            if (o == null || o instanceof Empty) {
                 emptyPositions.add(p);
             }
         }
@@ -163,7 +145,7 @@ public class Ecosystem {
         return p.getX() >= 0 && p.getX() < width && p.getY() >= 0 && p.getY() < height;
     }
 
-    // --- INIT ---
+    // --- INIT & RESTART ---
 
     public void initGrid() {
         this.organisms.clear();
@@ -188,10 +170,52 @@ public class Ecosystem {
         }
     }
 
-    private void printStats() {
-        long w = organisms.stream().filter(o -> o instanceof Wolf).count();
-        long s = organisms.stream().filter(o -> o instanceof Sheep).count();
-        long p = organisms.stream().filter(o -> o instanceof Plant).count();
-        System.out.printf("Step: %d | Wolf: %d | Sheep: %d | Plant: %d%n", stepCount, w, s, p);
+    public void restart() {
+        this.stepCount = 0;
+        this.isLifeActive = true;
+        initGrid();
+    }
+
+    // --- ADIÇÃO MANUAL ---
+
+    /**
+     * Tenta adicionar um organismo numa célula vazia aleatória.
+     * @return O organismo adicionado, ou null se falhar.
+     */
+    public Organism addOrganismRandomly(OrganismType type) {
+        if (!isLifeActive) return null; // Não permite adicionar se estiver em colapso total
+
+        Position pos = findRandomEmptyCell();
+        if (pos == null) return null; // Sem espaço
+
+        Organism newOrg = genOrganismAt(type, pos);
+        if (newOrg != null && !(newOrg instanceof Empty)) {
+            addOrganism(newOrg);
+            return newOrg;
+        }
+        return null;
+    }
+
+    private Position findRandomEmptyCell() {
+        List<Position> emptyPositions = new ArrayList<>();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (grid[y][x] instanceof Empty) {
+                    emptyPositions.add(new Position(x, y));
+                }
+            }
+        }
+        if (emptyPositions.isEmpty()) return null;
+        return emptyPositions.get(random.nextInt(emptyPositions.size()));
+    }
+
+    private Organism genOrganismAt(OrganismType type, Position pos) {
+        if (type == null || type == OrganismType.EMPTY) return new Empty(pos, OrganismType.EMPTY);
+        return switch (type) {
+            case WOLF -> new Wolf(pos);
+            case SHEEP -> new Sheep(pos);
+            case PLANT -> new Plant(pos);
+            case EMPTY -> new Empty(pos, OrganismType.EMPTY);
+        };
     }
 }
