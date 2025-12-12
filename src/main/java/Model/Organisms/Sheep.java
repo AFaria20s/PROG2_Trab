@@ -18,7 +18,10 @@ public class Sheep extends Animal {
 
     @Override
     protected boolean canEat(Organism other) {
-        return other.getType() == OrganismType.PLANT;
+        if(Math.random() < SimulationConfig.getInstance().getSHEEP_EAT_PROB()) {
+            return other.getType() == OrganismType.PLANT;
+        }
+        return false;
     }
 
     @Override

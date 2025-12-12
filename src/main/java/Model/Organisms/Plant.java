@@ -1,11 +1,12 @@
 package Model.Organisms;
 
 import Model.Ecosystem.Ecosystem;
+import Model.OrganismActions.Reproducible; // Import da Interface
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
 
-public class Plant extends Organism {
+public class Plant extends Organism implements Reproducible {
 
     public Plant(Position pos) {
         super(pos, OrganismType.PLANT);
@@ -24,7 +25,9 @@ public class Plant extends Organism {
         return SimulationConfig.getInstance().getPLANT_MAX_AGE();
     }
 
-    private void reproduce(Ecosystem eco) {
+    @Override
+    public void reproduce(Ecosystem eco) {
+        // Plantas reproduzem-se assexuadamente (espalham sementes)
         if (Math.random() > SimulationConfig.getInstance().getPLANT_REPRODUCTION_PROB()) return;
 
         Position spawnPos = eco.findAdjacentEmptyCell(getPosition());

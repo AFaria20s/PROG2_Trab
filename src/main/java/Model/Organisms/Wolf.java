@@ -18,8 +18,10 @@ public class Wolf extends Animal {
 
     @Override
     protected boolean canEat(Organism other) {
-        // Lobo come ovelha. Adicione && Math.random() < prob se quiser falhar ataques
-        return other.getType() == OrganismType.SHEEP;
+        if(Math.random() < SimulationConfig.getInstance().getWOLF_EAT_PROB()) {
+            return other.getType() == OrganismType.SHEEP;
+        }
+        return false;
     }
 
     @Override
