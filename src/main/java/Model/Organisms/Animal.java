@@ -1,13 +1,17 @@
 package Model.Organisms;
 
 import Model.Ecosystem.Ecosystem;
+import Model.OrganismActions.Eater;
+import Model.OrganismActions.Movable;
+import Model.OrganismActions.Reproducible;
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Animal extends Organism {
+public abstract class Animal extends Organism implements Movable, Eater, Reproducible {
+
     protected int energy;
     protected Random random = new Random();
 
@@ -16,7 +20,6 @@ public abstract class Animal extends Organism {
         this.energy = startEnergy;
     }
 
-    // --- CONFIGURAÇÕES ESPECÍFICAS (Abstratas) ---
     protected abstract int getEnergyCostPerStep();
     protected abstract boolean canEat(Organism other);
     protected abstract int getEnergyGainFromFood();
@@ -30,7 +33,6 @@ public abstract class Animal extends Organism {
         updateAge(eco);
         if (!isAlive()) return;
 
-        // Gasto metabólico
         this.energy -= getEnergyCostPerStep();
         if (this.energy <= 0) {
             eco.removeOrganism(this);
@@ -42,7 +44,8 @@ public abstract class Animal extends Organism {
         if (isAlive()) reproduce(eco);
     }
 
-    protected void move(Ecosystem eco) {
+    @Override
+    public void move(Ecosystem eco) {
         List<Position> adjacent = eco.getAdjacentPositions(getPosition());
         List<Position> validMoves = new ArrayList<>();
 
@@ -59,32 +62,34 @@ public abstract class Animal extends Organism {
         }
     }
 
-    protected void eat(Ecosystem eco) {
+    // --- IMPLEMENTAÇÃO DA INTERFACE EATER ---
+    @Override
+    public void eat(Ecosystem eco) {
         List<Position> adjacent = eco.getAdjacentPositions(getPosition());
         for (Position p : adjacent) {
             Organism target = eco.getOrganismAt(p);
 
             if (target != null && canEat(target)) {
-                // Se for probabilístico (ex: lobo falha ataque), adicione check aqui
-                // Para simplificar, assumimos sucesso se for a presa correta
                 eco.removeOrganism(target);
                 this.energy += getEnergyGainFromFood();
-                return; // Só come um por turno
+                return;
             }
         }
     }
 
-    protected void reproduce(Ecosystem eco) {
+    // --- IMPLEMENTAÇÃO DA INTERFACE REPRODUCIBLE ---
+    @Override
+    public void reproduce(Ecosystem eco) {
         if (random.nextDouble() > getReproductionProbability()) return;
         if (this.energy < getMinEnergyToReproduce()) return;
 
-        // 1. Encontrar Parceiro
+        // Encontrar Parceiro (Lógica específica de animais sexuados)
         Animal partner = null;
         for (Position p : eco.getAdjacentPositions(getPosition())) {
             Organism target = eco.getOrganismAt(p);
-            // Verifica se é da mesma classe (Wolf com Wolf, Sheep com Sheep) e tem energia
-            if (target != null && target.getClass().equals(this.getClass())) {
-                Animal possiblePartner = (Animal) target;
+
+            // Verifica se é da mesma classe e tem energia
+            if (target instanceof Animal possiblePartner) {
                 if (possiblePartner.energy >= getMinEnergyToReproduce()) {
                     partner = possiblePartner;
                     break;

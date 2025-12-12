@@ -9,8 +9,6 @@ import Model.Util.SimulationConfig;
 import java.util.*;
 
 public class SimulationCLI {
-
-    // REMOVIDO 'FINAL' PARA PERMITIR REDIMENSIONAMENTO (INSTANCIAR NOVO ECOSSISTEMA)
     private Ecosystem ecosystem;
 
     private Timer timer;

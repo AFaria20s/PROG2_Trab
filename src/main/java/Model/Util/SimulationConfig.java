@@ -17,31 +17,48 @@ public class SimulationConfig {
     private int HEIGHT = 15;
 
     // --- TEMPO ---
-    private int STEPS_PER_SECOND = 20;
+    private int STEPS_PER_SECOND = 15; // Ligeiramente mais lento para acompanhares
 
-    // === PROBABILIDADES INICIAIS DE SPAWN ===
-    private double PROB_WOLF_SPAWN = 0.035;
-    private double PROB_SHEEP_SPAWN = 0.09;
-    private double PROB_PLANT_SPAWN = 0.20;
+    // === PROBABILIDADES INICIAIS DE SPAWN (Ao iniciar o jogo) ===
+    private double PROB_WOLF_SPAWN = 0.035;  // Menos lobos no início
+    private double PROB_SHEEP_SPAWN = 0.08; // Mais ovelhas
+    private double PROB_PLANT_SPAWN = 0.20; // MUITO mais plantas
 
-    // === REGRAS DA OVELHA ===
-    private int SHEEP_MAX_AGE = 25;
-    private int SHEEP_ENERGY_GAIN_EAT = 10;
+    // === REGRAS DA OVELHA (Presa - Reprodução Rápida) ===
+    private int SHEEP_MAX_AGE = 35;             // Vivem mais tempo
+    private int SHEEP_ENERGY_GAIN_EAT = 15;     // Ganham mais energia (era 10)
     private int SHEEP_ENERGY_COST_STEP = 1;
-    private double SHEEP_REPRODUCTION_PROB = 0.20;
-    private int SHEEP_REPRODUCTION_COST = 20;
+    private double SHEEP_REPRODUCTION_PROB = 0.50; // 50% chance se tiver energia (era 20%)
+    private int SHEEP_REPRODUCTION_COST = 15;   // Mais barato reproduzir (era 20)
+    private double SHEEP_EAT_PROB = 0.6;        // Se vir comida, come sempre
 
-    // === REGRAS DO LOBO ===
-    private int WOLF_MAX_AGE = 30;
-    private int WOLF_ENERGY_GAIN_EAT = 30;
+    // === REGRAS DO LOBO (Predador - Reprodução Lenta) ===
+    private int WOLF_MAX_AGE = 40;
+    private int WOLF_ENERGY_GAIN_EAT = 40;      // Ganha bem ao comer
     private int WOLF_ENERGY_COST_STEP = 1;
-    private double WOLF_REPRODUCTION_PROB = 0.30;
-    private int WOLF_REPRODUCTION_COST = 30;
-    private double WOLF_EAT_PROB = 0.60;
+    private double WOLF_REPRODUCTION_PROB = 0.15; // Predadores reproduzem-se devagar
+    private int WOLF_REPRODUCTION_COST = 40;    // Custa caro fazer um lobinho
+    private double WOLF_EAT_PROB = 0.80;
 
-    // === REGRAS DA PLANTA ===
-    private int PLANT_MAX_AGE = 15;
-    private double PLANT_REPRODUCTION_PROB = 0.05;
+    // === REGRAS DA PLANTA (Base da cadeia) ===
+    private int PLANT_MAX_AGE = 30;
+    private double PLANT_REPRODUCTION_PROB = 0.15; // Plantas crescem mais rápido (era 0.05)
+
+    // --- REGRAS DO CACADOR ---
+    private double PROB_HUNTER_APPEARANCE = 0.03; // 5% chance a cada passo
+    private int HUNTER_SPAWN_THRESHOLD = 15;    // So aparece se houverem pelo menos 15 animais
+    private int HUNTER_DEPARTURE_THRESHOLD = 15;    // Vai embora caso haja menos de 15 animais
+
+    private int HUNTER_MAX_ENERGY = 150; // Energia máxima que o Hunter pode acumular
+    private int HUNTER_SATISFIED_ENERGY_THRESHOLD = 100; // Se a energia > 120, ele considera ir embora
+
+    private int HUNTER_SPAWN_COUNT = 1;
+    private int HUNTER_MAX_AGE = 80;
+    private int HUNTER_ENERGY_GAIN_EAT = 50;
+    private int HUNTER_ENERGY_COST_STEP = 2;
+    private int HUNTER_HUNT_RADIUS = 4;           // Aumentei o range para 4
+    private double HUNTER_BASE_HUNT_PROB = 0.40;  // Mais letal base
+    private double HUNTER_ENERGY_SKILL_FACTOR = 0.006;
 
     // --- GETTERS ---
     public int getHEIGHT() {return HEIGHT;}
@@ -63,11 +80,22 @@ public class SimulationConfig {
     public double getWOLF_EAT_PROB() { return WOLF_EAT_PROB; }
     public int getPLANT_MAX_AGE() { return PLANT_MAX_AGE; }
     public double getPLANT_REPRODUCTION_PROB() { return PLANT_REPRODUCTION_PROB; }
+    public double getPROB_HUNTER_APPEARANCE() { return PROB_HUNTER_APPEARANCE; }
+    public int getHUNTER_SPAWN_THRESHOLD() { return HUNTER_SPAWN_THRESHOLD; }
+    public int getHUNTER_SPAWN_COUNT() { return HUNTER_SPAWN_COUNT; }
+    public int getHUNTER_MAX_AGE() { return HUNTER_MAX_AGE; }
+    public int getHUNTER_ENERGY_GAIN_EAT() { return HUNTER_ENERGY_GAIN_EAT; }
+    public int getHUNTER_ENERGY_COST_STEP() { return HUNTER_ENERGY_COST_STEP; }
+    public int getHUNTER_HUNT_RADIUS() { return HUNTER_HUNT_RADIUS; }
+    public double getHUNTER_BASE_HUNT_PROB() { return HUNTER_BASE_HUNT_PROB; }
+    public double getHUNTER_ENERGY_SKILL_FACTOR() { return HUNTER_ENERGY_SKILL_FACTOR; }
+    public int getHUNTER_DEPARTURE_THRESHOLD() { return HUNTER_DEPARTURE_THRESHOLD; }
+    public double getSHEEP_EAT_PROB() {return SHEEP_EAT_PROB;}
+    public int getHUNTER_MAX_ENERGY() { return HUNTER_MAX_ENERGY; }
+    public int getHUNTER_SATISFIED_ENERGY_THRESHOLD() { return HUNTER_SATISFIED_ENERGY_THRESHOLD; }
 
     // --- SETTERS ---
     public void setSTEPS_PER_SECOND(int steps) { this.STEPS_PER_SECOND = steps; }
-
-    // NOVOS SETTERS PARA A GRID
     public void setWIDTH(int width) { this.WIDTH = width; }
     public void setHEIGHT(int height) { this.HEIGHT = height; }
 }

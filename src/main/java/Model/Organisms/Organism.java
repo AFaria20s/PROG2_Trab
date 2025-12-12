@@ -33,7 +33,4 @@ public abstract class Organism {
     public void die() { this.alive = false; }
     public OrganismType getType() { return type; }
     public String getDisplaySymbol() { return type.getSymbol(); }
-    public int getAge() {
-        return age;
-    }
 }

@@ -51,6 +51,8 @@ public class Ecosystem {
             }
         }
 
+        attemptHunterSpawn();
+
         // Verifica o estado de vida (lógica apenas)
         checkLifeStatus();
     }
@@ -105,12 +107,40 @@ public class Ecosystem {
 
     public void moveOrganism(Organism org, Position newPos) {
         Position oldPos = org.getPosition();
-        // 1. Limpa posição antiga
+        // Limpa posição antiga
         this.grid[oldPos.getY()][oldPos.getX()] = new Empty(oldPos, OrganismType.EMPTY);
-        // 2. Atualiza referência interna
+        // Atualiza referência interna
         org.setPosition(newPos);
-        // 3. Ocupa nova posição
+        // Ocupa nova posição
         this.grid[newPos.getY()][newPos.getX()] = org;
+    }
+
+    private void attemptHunterSpawn() {
+        SimulationConfig config = SimulationConfig.getInstance();
+        // O número total de animais (predadores + presas) tem que ser alto.
+        int totalAnimals = getOrganismCountByType(OrganismType.WOLF) + getOrganismCountByType(OrganismType.SHEEP);
+
+        if (totalAnimals < config.getHUNTER_SPAWN_THRESHOLD()) {
+            return; // Não aparecem caçadores se não houver presas/concorrência suficientes.
+        }
+
+        // Verifica a chance a cada passo.
+        if (random.nextDouble() < config.getPROB_HUNTER_APPEARANCE()) {
+
+            int spawnCount = config.getHUNTER_SPAWN_COUNT();
+            int addedCount = 0;
+
+            for(int i = 0; i < spawnCount; i++) {
+                Organism newHunter = addOrganismRandomly(OrganismType.HUNTER);
+                if (newHunter != null) {
+                    addedCount++;
+                }
+            }
+
+            if (addedCount > 0) {
+                System.out.println("««« HUNTER APPEARANCE: " + addedCount + " Caçador(es) chegaram! »»»");
+            }
+        }
     }
 
     // --- GETTERS E HELPERS ---
@@ -118,6 +148,27 @@ public class Ecosystem {
     public Organism getOrganismAt(Position pos) {
         if (!isPositionValid(pos)) return null;
         return grid[pos.getY()][pos.getX()];
+    }
+
+    public List<Position> getAdjacentPositionsRadius(Position pos, int radius) {
+        List<Position> positions = new ArrayList<>();
+
+        int startX = pos.getX() - radius;
+        int endX = pos.getX() + radius;
+        int startY = pos.getY() - radius;
+        int endY = pos.getY() + radius;
+
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                Position currentPos = new Position(x, y);
+                if (isPositionValid(currentPos)) {
+                    if (!currentPos.equals(pos)) {
+                        positions.add(currentPos);
+                    }
+                }
+            }
+        }
+        return positions;
     }
 
     public List<Position> getAdjacentPositions(Position pos) {
@@ -212,6 +263,7 @@ public class Ecosystem {
     private Organism genOrganismAt(OrganismType type, Position pos) {
         if (type == null || type == OrganismType.EMPTY) return new Empty(pos, OrganismType.EMPTY);
         return switch (type) {
+            case HUNTER -> new Hunter(pos);
             case WOLF -> new Wolf(pos);
             case SHEEP -> new Sheep(pos);
             case PLANT -> new Plant(pos);

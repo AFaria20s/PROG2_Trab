@@ -1,6 +1,7 @@
 package Model.Util;
 
 public enum OrganismType {
+    HUNTER("X", "Hunter"),
     PLANT("*", "Plant"),
     SHEEP("O", "Sheep"),
     WOLF("w", "Wolf"),
