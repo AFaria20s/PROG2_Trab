@@ -7,7 +7,7 @@ import Model.Util.SimulationConfig;
 public class Wolf extends Animal {
 
     public Wolf(Position pos) {
-        super(pos, OrganismType.WOLF, 50); // 50 energia inicial fixa ou random
+        super(pos, OrganismType.WOLF, 50);
     }
 
     @Override

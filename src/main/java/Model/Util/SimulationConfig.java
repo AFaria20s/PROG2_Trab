@@ -17,47 +17,47 @@ public class SimulationConfig {
     private int HEIGHT = 15;
 
     // --- TEMPO ---
-    private int STEPS_PER_SECOND = 15; // Ligeiramente mais lento para acompanhares
+    private int STEPS_PER_SECOND = 15;
 
-    // === PROBABILIDADES INICIAIS DE SPAWN (Ao iniciar o jogo) ===
-    private double PROB_WOLF_SPAWN = 0.035;  // Menos lobos no início
-    private double PROB_SHEEP_SPAWN = 0.08; // Mais ovelhas
-    private double PROB_PLANT_SPAWN = 0.20; // MUITO mais plantas
+    // === PROBABILIDADES INICIAIS DE SPAWN ===
+    private double PROB_WOLF_SPAWN = 0.035;
+    private double PROB_SHEEP_SPAWN = 0.08;
+    private double PROB_PLANT_SPAWN = 0.20;
 
-    // === REGRAS DA OVELHA (Presa - Reprodução Rápida) ===
-    private int SHEEP_MAX_AGE = 35;             // Vivem mais tempo
-    private int SHEEP_ENERGY_GAIN_EAT = 15;     // Ganham mais energia (era 10)
+    // === REGRAS DA OVELHA ===
+    private int SHEEP_MAX_AGE = 35;
+    private int SHEEP_ENERGY_GAIN_EAT = 15;
     private int SHEEP_ENERGY_COST_STEP = 1;
-    private double SHEEP_REPRODUCTION_PROB = 0.50; // 50% chance se tiver energia (era 20%)
-    private int SHEEP_REPRODUCTION_COST = 15;   // Mais barato reproduzir (era 20)
-    private double SHEEP_EAT_PROB = 0.6;        // Se vir comida, come sempre
+    private double SHEEP_REPRODUCTION_PROB = 0.50;
+    private int SHEEP_REPRODUCTION_COST = 15;
+    private double SHEEP_EAT_PROB = 0.6;
 
-    // === REGRAS DO LOBO (Predador - Reprodução Lenta) ===
+    // === REGRAS DO LOBO ===
     private int WOLF_MAX_AGE = 40;
-    private int WOLF_ENERGY_GAIN_EAT = 40;      // Ganha bem ao comer
+    private int WOLF_ENERGY_GAIN_EAT = 40;
     private int WOLF_ENERGY_COST_STEP = 1;
-    private double WOLF_REPRODUCTION_PROB = 0.15; // Predadores reproduzem-se devagar
-    private int WOLF_REPRODUCTION_COST = 40;    // Custa caro fazer um lobinho
+    private double WOLF_REPRODUCTION_PROB = 0.15;
+    private int WOLF_REPRODUCTION_COST = 40;
     private double WOLF_EAT_PROB = 0.80;
 
-    // === REGRAS DA PLANTA (Base da cadeia) ===
+    // === REGRAS DA PLANTA ===
     private int PLANT_MAX_AGE = 30;
-    private double PLANT_REPRODUCTION_PROB = 0.15; // Plantas crescem mais rápido (era 0.05)
+    private double PLANT_REPRODUCTION_PROB = 0.15;
 
     // --- REGRAS DO CACADOR ---
-    private double PROB_HUNTER_APPEARANCE = 0.03; // 5% chance a cada passo
-    private int HUNTER_SPAWN_THRESHOLD = 15;    // So aparece se houverem pelo menos 15 animais
-    private int HUNTER_DEPARTURE_THRESHOLD = 15;    // Vai embora caso haja menos de 15 animais
+    private double PROB_HUNTER_APPEARANCE = 0.03;
+    private int HUNTER_SPAWN_THRESHOLD = 15;
+    private int HUNTER_DEPARTURE_THRESHOLD = 15;
 
-    private int HUNTER_MAX_ENERGY = 150; // Energia máxima que o Hunter pode acumular
-    private int HUNTER_SATISFIED_ENERGY_THRESHOLD = 100; // Se a energia > 120, ele considera ir embora
+    private int HUNTER_MAX_ENERGY = 150;
+    private int HUNTER_SATISFIED_ENERGY_THRESHOLD = 100;
 
     private int HUNTER_SPAWN_COUNT = 1;
     private int HUNTER_MAX_AGE = 80;
     private int HUNTER_ENERGY_GAIN_EAT = 50;
     private int HUNTER_ENERGY_COST_STEP = 2;
-    private int HUNTER_HUNT_RADIUS = 4;           // Aumentei o range para 4
-    private double HUNTER_BASE_HUNT_PROB = 0.40;  // Mais letal base
+    private int HUNTER_HUNT_RADIUS = 4;
+    private double HUNTER_BASE_HUNT_PROB = 0.40;
     private double HUNTER_ENERGY_SKILL_FACTOR = 0.006;
 
     // --- GETTERS ---

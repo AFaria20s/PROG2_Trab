@@ -83,7 +83,7 @@ public abstract class Animal extends Organism implements Movable, Eater, Reprodu
         if (random.nextDouble() > getReproductionProbability()) return;
         if (this.energy < getMinEnergyToReproduce()) return;
 
-        // Encontrar Parceiro (Lógica específica de animais sexuados)
+        // Encontrar Parceiro (logica especifica de animais sexuados)
         Animal partner = null;
         for (Position p : eco.getAdjacentPositions(getPosition())) {
             Organism target = eco.getOrganismAt(p);

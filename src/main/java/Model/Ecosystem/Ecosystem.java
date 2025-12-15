@@ -228,19 +228,14 @@ public class Ecosystem {
     }
 
     // --- ADIÇÃO MANUAL ---
-
-    /**
-     * Tenta adicionar um organismo numa célula vazia aleatória.
-     * @return O organismo adicionado, ou null se falhar.
-     */
     public Organism addOrganismRandomly(OrganismType type) {
-        if (!isLifeActive) return null; // Não permite adicionar se estiver em colapso total
+        if (!isLifeActive) return null;
 
         Position pos = findRandomEmptyCell();
-        if (pos == null) return null; // Sem espaço
+        if (pos == null) return null;
 
         Organism newOrg = genOrganismAt(type, pos);
-        if (newOrg != null && !(newOrg instanceof Empty)) {
+        if (!(newOrg instanceof Empty)) {
             addOrganism(newOrg);
             return newOrg;
         }

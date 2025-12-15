@@ -50,7 +50,7 @@ public class SimulationCLI {
                 case 6: restartEcosystem(); break;
                 case 7: reconfigureEcosystem(); break;
                 case 8: displayStatsMode(); break;
-                case 9: resizeGridMode(); break; // NOVA OPÇÃO
+                case 9: resizeGridMode(); break;
                 case 0:
                     System.out.println("Exiting simulator.");
                     stopSimulation();
@@ -68,12 +68,12 @@ public class SimulationCLI {
         int width = ecosystem.getWidth();
         int height = ecosystem.getHeight();
 
-        // 2. Borda Superior
+        // Borda Superior
         System.out.print(displayIndex ? " +" : "+");
         for (int i = 0; i < width; i++) System.out.print("-");
         System.out.println("+");
 
-        // 3. Grelha e Eixo Y
+        // Grelha e Eixo Y
         for (int y = 0; y < height; y++) {
             System.out.print("|");
             for(int x = 0; x < width; x++) {
@@ -83,7 +83,7 @@ public class SimulationCLI {
             System.out.println("|");
         }
 
-        // 4. Borda Inferior
+        // Borda Inferior
         System.out.print(displayIndex ? " +" : "+");
         for (int i = 0; i < width; i++) System.out.print("-");
         System.out.println("+");
@@ -128,7 +128,7 @@ public class SimulationCLI {
         System.out.print("Choose mode: ");
     }
 
-    // OPÇÃO 9: NOVA FUNÇÃO DE REDIMENSIONAMENTO
+    // NOVA FUNÇÃO DE REDIMENSIONAMENTO
     private void resizeGridMode() {
         stopSimulation();
         System.out.println("--- Resize Grid (Warning: This will RESTART the ecosystem) ---");
@@ -145,11 +145,11 @@ public class SimulationCLI {
                 return;
             }
 
-            // 1. Atualizar Configuração Singleton
+            // Atualizar Configuração Singleton
             SimulationConfig.getInstance().setWIDTH(newW);
             SimulationConfig.getInstance().setHEIGHT(newH);
 
-            // 2. CRÍTICO: Criar nova instância do Ecossistema com novos tamanhos
+            // Criar nova instância do Ecossistema com novos tamanhos
             this.ecosystem = new Ecosystem(newW, newH);
             this.ecosystem.initGrid();
 
