@@ -121,9 +121,9 @@ public class SimulationCLI {
         System.out.println("--- ECO CONFIG ---");
         System.out.println("5. Add Organisms");
         System.out.println("6. Restart Ecossystem");
-        System.out.println("7. Reconfigure Speed");
-        System.out.println("8. Toggle Stats (Current: " + statsStatus + ")");
-        System.out.println("9. Resize Grid (Current: " + w + "x" + h + ")");
+        System.out.println("7. Reconfigure Speed: " + SimulationConfig.getInstance().getSTEPS_PER_SECOND());
+        System.out.println("8. Toggle Stats: " + statsStatus);
+        System.out.println("9. Resize Grid: " + w + "x" + h);
         System.out.println("0. Exit");
         System.out.print("Choose mode: ");
     }
