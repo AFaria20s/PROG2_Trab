@@ -3,11 +3,12 @@ package Model.Util;
 import java.awt.Color;
 
 public enum OrganismType {
-    EMPTY(".", "Empty", new Color(255,255,255)),    // Branco
-    HUNTER("X", "Hunter", new Color(255, 69, 0)),   // Laranja avermelhado
-    PLANT("*", "Plant", new Color(34, 139, 34)),    // Verde Floresta
-    SHEEP("O", "Sheep", new Color(100, 149, 237)),  // Azul
-    WOLF("w", "Wolf", new Color(60, 60, 60));       // Cinzento Escuro
+    EMPTY(".", "Empty", new Color(252, 252, 252)),
+    HUNTER("X", "Hunter", new Color(255, 69, 0)),
+    PLANT("*", "Plant", new Color(34, 139, 34)),
+    SHEEP("O", "Sheep", new Color(100, 149, 237)),
+    WOLF("w", "Wolf", new Color(82, 57, 57))
+    ;
 
     private final String symbol;
     private final String type;

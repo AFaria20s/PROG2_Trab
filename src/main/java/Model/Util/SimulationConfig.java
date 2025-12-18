@@ -1,5 +1,7 @@
 package Model.Util;
 
+import View.ThemeType;
+
 public class SimulationConfig {
 
     private static SimulationConfig instance;
@@ -11,6 +13,9 @@ public class SimulationConfig {
         }
         return instance;
     }
+
+    // --- Configs ---
+    private ThemeType theme = ThemeType.LIGHT;
 
     // --- GRID ---
     private int WIDTH = 30;
@@ -133,4 +138,11 @@ public class SimulationConfig {
     public void setHUNTER_ENERGY_COST_STEP(int v) { this.HUNTER_ENERGY_COST_STEP = v; }
     public void setHUNTER_HUNT_RADIUS(int v) { this.HUNTER_HUNT_RADIUS = v; }
     public void setHUNTER_BASE_HUNT_PROB(double v) { this.HUNTER_BASE_HUNT_PROB = v; }
+
+    public ThemeType getTheme() {
+        return theme;
+    }
+    public void setTheme(ThemeType theme) {
+        this.theme = theme;
+    }
 }
