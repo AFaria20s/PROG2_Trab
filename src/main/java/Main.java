@@ -1,9 +1,8 @@
-import CLI.SimulationCLI;
+import View.Frames.SimulationGUI;
 
 public class Main {
 
     public static void main(String[] args) {
-        SimulationCLI cli = new SimulationCLI();
-        cli.start();
+        new SimulationGUI();
     }
 }
