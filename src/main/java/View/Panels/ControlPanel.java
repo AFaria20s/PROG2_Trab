@@ -20,7 +20,7 @@ public class ControlPanel extends JPanel {
         this.mainGUI = gui;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBorder(new EmptyBorder(15, 15, 15, 15));
-        this.setBackground(new Color(245, 245, 250));
+        //this.setBackground(new Color(245, 245, 250));
 
         // --- ESTATÍSTICAS ---
         addHeader("Estatísticas");
@@ -147,7 +147,6 @@ public class ControlPanel extends JPanel {
     private void addHeader(String text) {
         JLabel l = new JLabel(text.toUpperCase());
         l.setFont(new Font("SansSerif", Font.BOLD, 14));
-        l.setForeground(Color.DARK_GRAY);
         l.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(l);
         add(Box.createRigidArea(new Dimension(0, 5)));

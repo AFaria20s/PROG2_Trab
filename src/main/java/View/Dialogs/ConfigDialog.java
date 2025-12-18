@@ -1,6 +1,11 @@
 package View.Dialogs;
 
 import Model.Util.SimulationConfig;
+import View.ThemeType;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -53,8 +58,48 @@ public class ConfigDialog extends JDialog {
 
         main.add(pSpawn);
         main.add(Box.createVerticalGlue());
+
+        JPanel pUI = createGroupPanel("Aparência");
+
+        JLabel lblTheme = new JLabel("Tema:");
+        JComboBox<ThemeType> cbTheme = new JComboBox<>(ThemeType.values());
+        cbTheme.setSelectedItem(config.getTheme());
+
+        cbTheme.addActionListener(e -> {
+            ThemeType selected = (ThemeType) cbTheme.getSelectedItem();
+            if (selected != null) {
+                config.setTheme(selected);
+                applyTheme(selected);
+            }
+        });
+
+        addToGrid(pUI, lblTheme, cbTheme, 0);
+
+        main.add(pUI);
+
+
         return main;
     }
+
+    private void applyTheme(ThemeType theme) {
+        try {
+            switch (theme) {
+                case LIGHT -> UIManager.setLookAndFeel(new FlatLightLaf());
+                case DARK -> UIManager.setLookAndFeel(new FlatDarkLaf());
+                case DARCULA -> UIManager.setLookAndFeel(new FlatDarculaLaf());
+            }
+
+            // Atualiza TODAS as janelas abertas
+            for (Window w : Window.getWindows()) {
+                SwingUtilities.updateComponentTreeUI(w);
+                w.pack();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     // --- PAINEL LOBOS (Atualizado com Metabolismo) ---
     private JPanel createWolfPanel() {

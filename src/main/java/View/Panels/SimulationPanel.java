@@ -13,7 +13,6 @@ public class SimulationPanel extends JPanel {
 
     public SimulationPanel(Ecosystem ecosystem) {
         this.ecosystem = ecosystem;
-        this.setBackground(Color.WHITE);
     }
 
     @Override

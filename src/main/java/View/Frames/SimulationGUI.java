@@ -6,6 +6,9 @@ import Model.Util.SimulationConfig;
 import View.Dialogs.ConfigDialog;
 import View.Panels.ControlPanel;
 import View.Panels.SimulationPanel;
+import View.ThemeType;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
@@ -29,7 +32,13 @@ public class SimulationGUI {
 
     private void setupLookAndFeel() {
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf()); // ou FlatLightLaf()
+            ThemeType theme = SimulationConfig.getInstance().getTheme();
+
+            switch (theme) {
+                case LIGHT -> UIManager.setLookAndFeel(new FlatLightLaf());
+                case DARK -> UIManager.setLookAndFeel(new FlatDarkLaf());
+                case DARCULA -> UIManager.setLookAndFeel(new FlatDarculaLaf());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -77,7 +86,7 @@ public class SimulationGUI {
     private void executeStepLoop() {
         // Verifica se o ecossistema morreu
         if (!ecosystem.isLifeActive()) {
-            stopTimerAndNotify("💀 EXTINÇÃO TOTAL 💀\nO ecossistema colapsou.");
+            stopTimerAndNotify("EXTINÇÃO TOTAL\nO ecossistema colapsou.");
             return;
         }
 
