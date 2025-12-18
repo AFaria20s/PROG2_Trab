@@ -18,7 +18,7 @@ public class SimulationConfig {
     private ThemeType theme = ThemeType.LIGHT;
 
     // --- GRID ---
-    private int WIDTH = 30;
+    private int WIDTH = 50;
     private int HEIGHT = 30;
 
     // --- TEMPO ---
@@ -112,20 +112,20 @@ public class SimulationConfig {
     public void setSHEEP_EAT_PROB(double v) { this.SHEEP_EAT_PROB = v; }
     public void setSHEEP_ENERGY_GAIN_EAT(int v) { this.SHEEP_ENERGY_GAIN_EAT = v; }
     public void setSHEEP_MAX_AGE(int v) { this.SHEEP_MAX_AGE = v; }
-    public void setSHEEP_ENERGY_COST_STEP(int v) { this.SHEEP_ENERGY_COST_STEP = v; } // NOVO
-    public void setSHEEP_REPRODUCTION_COST(int v) { this.SHEEP_REPRODUCTION_COST = v; } // NOVO
+    public void setSHEEP_ENERGY_COST_STEP(int v) { this.SHEEP_ENERGY_COST_STEP = v; }
+    public void setSHEEP_REPRODUCTION_COST(int v) { this.SHEEP_REPRODUCTION_COST = v; }
 
     // --- SETTERS LOBOS ---
     public void setWOLF_REPRODUCTION_PROB(double v) { this.WOLF_REPRODUCTION_PROB = v; }
     public void setWOLF_EAT_PROB(double v) { this.WOLF_EAT_PROB = v; }
     public void setWOLF_ENERGY_GAIN_EAT(int v) { this.WOLF_ENERGY_GAIN_EAT = v; }
     public void setWOLF_MAX_AGE(int v) { this.WOLF_MAX_AGE = v; }
-    public void setWOLF_ENERGY_COST_STEP(int v) { this.WOLF_ENERGY_COST_STEP = v; } // NOVO
-    public void setWOLF_REPRODUCTION_COST(int v) { this.WOLF_REPRODUCTION_COST = v; } // NOVO
+    public void setWOLF_ENERGY_COST_STEP(int v) { this.WOLF_ENERGY_COST_STEP = v; }
+    public void setWOLF_REPRODUCTION_COST(int v) { this.WOLF_REPRODUCTION_COST = v; }
 
     // --- SETTERS PLANTAS ---
     public void setPLANT_REPRODUCTION_PROB(double v) { this.PLANT_REPRODUCTION_PROB = v; }
-    public void setPLANT_MAX_AGE(int v) { this.PLANT_MAX_AGE = v; } // NOVO
+    public void setPLANT_MAX_AGE(int v) { this.PLANT_MAX_AGE = v; }
 
     // --- SETTERS CAÇADOR (NOVOS) ---
     public void setPROB_HUNTER_APPEARANCE(double v) { this.PROB_HUNTER_APPEARANCE = v; }

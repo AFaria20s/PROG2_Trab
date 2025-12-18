@@ -5,8 +5,8 @@ import java.awt.Color;
 public enum OrganismType {
     EMPTY(".", "Empty", new Color(252, 252, 252)),
     HUNTER("X", "Hunter", new Color(255, 69, 0)),
-    PLANT("*", "Plant", new Color(34, 139, 34)),
-    SHEEP("O", "Sheep", new Color(100, 149, 237)),
+    PLANT("*", "Plant", new Color(103, 196, 103)),
+    SHEEP("O", "Sheep", new Color(69, 113, 192)),
     WOLF("w", "Wolf", new Color(82, 57, 57))
     ;
 
