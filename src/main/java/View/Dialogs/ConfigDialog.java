@@ -74,9 +74,7 @@ public class ConfigDialog extends JDialog {
         });
 
         addToGrid(pUI, lblTheme, cbTheme, 0);
-
         main.add(pUI);
-
 
         return main;
     }

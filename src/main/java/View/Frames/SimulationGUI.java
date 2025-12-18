@@ -74,7 +74,7 @@ public class SimulationGUI {
         timer = new Timer(delay, e -> executeStepLoop());
 
         // Setup Final Janela
-        frame.setPreferredSize(new Dimension(1100, 750));
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

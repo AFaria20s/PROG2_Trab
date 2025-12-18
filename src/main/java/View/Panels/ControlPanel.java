@@ -127,8 +127,8 @@ public class ControlPanel extends JPanel {
 
     private void showResizeDialog() {
         JPanel p = new JPanel(new GridLayout(2, 2, 5, 5));
-        JTextField wField = new JTextField("50");
-        JTextField hField = new JTextField("30");
+        JTextField wField = new JTextField(SimulationConfig.getInstance().getWIDTH());
+        JTextField hField = new JTextField(SimulationConfig.getInstance().getHEIGHT());
         p.add(new JLabel("Largura:")); p.add(wField);
         p.add(new JLabel("Altura:")); p.add(hField);
 
