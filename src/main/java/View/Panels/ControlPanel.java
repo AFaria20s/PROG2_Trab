@@ -16,6 +16,11 @@ public class ControlPanel extends JPanel {
     private JButton btnStartStop;
     private JSlider speedSlider;
 
+    // Easter... what...? egg!
+    private JButton btnGodMode;
+    private int secretClickCount = 0;
+    private long lastClickTime = 0;
+
     public ControlPanel(SimulationGUI gui) {
         this.mainGUI = gui;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -48,6 +53,48 @@ public class ControlPanel extends JPanel {
 
         // --- SECÇÃO 3: CONTROLO DE TEMPO ---
         addHeader("Controlo Execução");
+
+        // EASSTERREEGGG
+        btnGodMode = new JButton("GOD MODE");
+        btnGodMode.setVisible(false); // Começa escondido
+        btnGodMode.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Mais alto que os outros
+        btnGodMode.setBackground(new Color(255, 215, 0)); // Dourado
+        btnGodMode.setForeground(Color.BLACK);
+        btnGodMode.setFont(new Font("SansSerif", Font.BOLD, 16));
+        btnGodMode.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Ação do botão
+        btnGodMode.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "MODO DEUS ATIVADO!\nAgora podes clicar na grelha para criar/remover vida.");
+            mainGUI.enableGodMode();
+        });
+
+        // --- DETETOR DE CLIQUES ---
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                long currentTime = System.currentTimeMillis();
+
+                if (currentTime - lastClickTime < 1000) {
+                    secretClickCount++;
+                } else {
+                    secretClickCount = 1;
+                }
+
+                lastClickTime = currentTime;
+
+                if (secretClickCount >= 5) {
+                    btnGodMode.setVisible(true);
+                    revalidate();
+                    repaint();
+                    secretClickCount = 0;
+                }
+            }
+        });
+
+        // Adiciona-o ao painel (por exemplo, abaixo do Iniciar/Pausar)
+        add(btnGodMode);
+        add(Box.createRigidArea(new Dimension(0, 10)));
 
         btnStartStop = addButton("Iniciar", e -> togglePlayPause());
         addButton("Passo Unico", e -> mainGUI.runOneStep()); // Assumi que runOneStep = runStep

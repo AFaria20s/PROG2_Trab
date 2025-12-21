@@ -1,7 +1,11 @@
 package View.Frames;
 
 import Model.Ecosystem.Ecosystem;
+import Model.Organisms.Empty;
+import Model.Organisms.Organism;
+import Model.Organisms.Wolf;
 import Model.Util.OrganismType;
+import Model.Util.Position;
 import Model.Util.SimulationConfig;
 import View.Dialogs.ConfigDialog;
 import View.Panels.ControlPanel;
@@ -26,12 +30,71 @@ public class SimulationGUI {
     private OrganismType extinctionTarget = null; // null significa qualquer extinção
     private int lastHunterCount;
 
+    private boolean godModeActive = false;
+
     public SimulationGUI() {
         setupLookAndFeel();
         initEcosystem(SimulationConfig.getInstance().getWIDTH(), SimulationConfig.getInstance().getHEIGHT());
         setupFrame();
 
         lastHunterCount = 0;
+
+        // Calculos feitos por (IA) devido ao offset que estava a dar problemas
+        simPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (godModeActive) {
+                    // Obter dimensões para recalcular o offset
+                    int gridW = ecosystem.getWidth();
+                    int gridH = ecosystem.getHeight();
+                    int panelW = simPanel.getWidth();
+                    int panelH = simPanel.getHeight();
+
+                    int cellSize = calculateCellSize();
+
+                    // Recalcular o offset (Exatamente como no SimulationPanel)
+                    int offsetX = (panelW - (cellSize * gridW)) / 2;
+                    int offsetY = (panelH - (cellSize * gridH)) / 2;
+
+                    // Subtrair o offset da posição do clique
+                    int clickX = e.getX() - offsetX;
+                    int clickY = e.getY() - offsetY;
+
+                    // Verificar se o clique foi dentro da área válida da grelha
+                    if (clickX >= 0 && clickY >= 0) {
+                        int x = clickX / cellSize;
+                        int y = clickY / cellSize;
+
+                        // Garante que não saiu dos limites da matriz (ex: margem direita/inferior)
+                        if (x < gridW && y < gridH) {
+                            Position pos = new Position(x, y);
+                            Organism target = ecosystem.getOrganismAt(pos);
+
+                            if (target instanceof Empty) {
+                                ecosystem.addOrganism(new Wolf(pos));
+                            } else {
+                                ecosystem.removeOrganism(target);
+                            }
+
+                            updateUI();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public int calculateCellSize() {
+        int gridW = ecosystem.getWidth();
+        int gridH = ecosystem.getHeight();
+
+        // Calcula quanto espaço cada quadrado pode ter na largura e na altura
+        int cellW = simPanel.getWidth() / gridW;
+        int cellH = simPanel.getHeight() / gridH;
+
+        // Retornamos o menor dos dois para garantir que a célula é um quadrado perfeito
+        // e que cabe dentro do painel.
+        return Math.max(1, Math.min(cellW, cellH));
     }
 
     private void setupLookAndFeel() {
@@ -131,6 +194,12 @@ public class SimulationGUI {
                 JOptionPane.showMessageDialog(frame, "Simulação de N passos concluída.");
             }
         }
+    }
+
+    public void enableGodMode() {
+        this.godModeActive = true;
+        // Podes mudar a cor da borda da grelha para avisar que está ativo
+        simPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
     }
 
     private void stopTimerAndNotify(String message) {
