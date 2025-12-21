@@ -1,9 +1,7 @@
 package View.Frames;
 
 import Model.Ecosystem.Ecosystem;
-import Model.Organisms.Empty;
-import Model.Organisms.Organism;
-import Model.Organisms.Wolf;
+import Model.Organisms.*;
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
@@ -18,6 +16,9 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 
 public class SimulationGUI {
     private Ecosystem ecosystem;
@@ -71,7 +72,19 @@ public class SimulationGUI {
                             Organism target = ecosystem.getOrganismAt(pos);
 
                             if (target instanceof Empty) {
-                                ecosystem.addOrganism(new Wolf(pos));
+                                switch (e.getButton()) {
+                                    case 1:
+                                        ecosystem.addOrganism(new Sheep(pos));
+                                        break;
+                                    case 2:
+                                        ecosystem.addOrganism(new Plant(pos));
+                                        break;
+                                    case 3:
+                                        ecosystem.addOrganism(new Wolf(pos));
+                                        break;
+                                    default:
+                                        break;
+                                }
                             } else {
                                 ecosystem.removeOrganism(target);
                             }

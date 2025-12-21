@@ -7,6 +7,8 @@ import View.Frames.SimulationGUI;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
     private final SimulationGUI mainGUI;
@@ -47,7 +49,7 @@ public class ControlPanel extends JPanel {
         lblWolf = addLabel("Lobos: 0", null);
         lblSheep = addLabel("Ovelhas: 0", null);
         lblPlant = addLabel("Plantas: 0", null);
-        lblHunter = addLabel("Caçadores: 0", null); // Novo Label
+        lblHunter = addLabel("Caçadores: 0", null);
 
         addSpacer();
 
@@ -55,17 +57,9 @@ public class ControlPanel extends JPanel {
         addHeader("Controlo Execução");
 
         // EASSTERREEGGG
-        btnGodMode = new JButton("GOD MODE");
-        btnGodMode.setVisible(false); // Começa escondido
-        btnGodMode.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Mais alto que os outros
-        btnGodMode.setBackground(new Color(255, 215, 0)); // Dourado
-        btnGodMode.setForeground(Color.BLACK);
-        btnGodMode.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnGodMode.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Ação do botão
+        btnGodMode = addGodButton("GOD MODE");
         btnGodMode.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "MODO DEUS ATIVADO!\nAgora podes clicar na grelha para criar/remover vida.");
+            //JOptionPane.showMessageDialog(this, "MODO DEUS ATIVADO!\nAgora podes clicar na grelha para criar/remover vida.");
             mainGUI.enableGodMode();
         });
 
@@ -75,7 +69,7 @@ public class ControlPanel extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 long currentTime = System.currentTimeMillis();
 
-                if (currentTime - lastClickTime < 1000) {
+                if (currentTime - lastClickTime < 500) {
                     secretClickCount++;
                 } else {
                     secretClickCount = 1;
@@ -120,7 +114,7 @@ public class ControlPanel extends JPanel {
         // --- SECÇÃO 4: ECOSSISTEMA ---
         addHeader("Ecossistema");
         addButton("Adicionar Organismos", e -> showAddOrganismDialog());
-        addButton("Reiniciar (Reset)", e -> mainGUI.restartSimulation());
+        addButton("Reiniciar", e -> mainGUI.restartSimulation());
         addButton("Redimensionar Grelha", e -> showResizeDialog());
 
         addSpacer();
@@ -248,6 +242,17 @@ public class ControlPanel extends JPanel {
         l.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(l);
         return l;
+    }
+
+    private JButton addGodButton(String text) {
+        JButton b = new JButton(text);
+        b.setVisible(false); // Começa escondido
+        b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Mais alto que os outros
+        b.setBackground(new Color(241, 255, 45)); // Dourado
+        b.setForeground(Color.BLACK);
+        b.setFont(new Font("SansSerif", Font.BOLD, 16));
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return b;
     }
 
     private JButton addButton(String text, java.awt.event.ActionListener action) {
