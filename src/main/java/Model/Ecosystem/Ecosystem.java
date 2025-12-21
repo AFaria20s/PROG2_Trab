@@ -5,7 +5,9 @@ import Model.Util.Direction;
 import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
+import View.Util.ToastNotification;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -135,11 +137,6 @@ public class Ecosystem {
                 if (newHunter != null) {
                     addedCount++;
                 }
-            }
-
-            if (addedCount > 0) {
-                // Hunter appearence
-                // Logica quando aparece um hunter
             }
         }
     }

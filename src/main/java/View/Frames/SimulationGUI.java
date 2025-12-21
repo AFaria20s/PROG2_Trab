@@ -7,6 +7,7 @@ import View.Dialogs.ConfigDialog;
 import View.Panels.ControlPanel;
 import View.Panels.SimulationPanel;
 import View.ThemeType;
+import View.Util.ToastNotification;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -23,11 +24,14 @@ public class SimulationGUI {
 
     private int stepsRemaining = -1; // -1 significa infinito
     private OrganismType extinctionTarget = null; // null significa qualquer extinção
+    private int lastHunterCount;
 
     public SimulationGUI() {
         setupLookAndFeel();
         initEcosystem(SimulationConfig.getInstance().getWIDTH(), SimulationConfig.getInstance().getHEIGHT());
         setupFrame();
+
+        lastHunterCount = 0;
     }
 
     private void setupLookAndFeel() {
@@ -100,6 +104,21 @@ public class SimulationGUI {
 
         // Executa o passo
         ecosystem.simulateStep();
+
+        int currentHunters = ecosystem.getOrganismCountByType(OrganismType.HUNTER);
+
+        // Se temos mais caçadores do que no passo anterior
+        if (currentHunters > lastHunterCount) {
+            ToastNotification.show(
+                    frame,
+                    "Caçador Apareceu!",
+                    new Color(243, 118, 20, 220),
+                    1500
+            );
+        }
+        // Atualizamos a contagem para a próxima vez
+        lastHunterCount = currentHunters;
+
         updateUI();
 
         // Verificacao - N Passos
