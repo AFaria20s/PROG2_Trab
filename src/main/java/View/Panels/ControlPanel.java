@@ -166,7 +166,7 @@ public class ControlPanel extends JPanel {
         p.add(new JLabel("Largura:")); p.add(wField);
         p.add(new JLabel("Altura:")); p.add(hField);
 
-        int res = JOptionPane.showConfirmDialog(this, p, "Novo Tamanho (Reinicia!)", JOptionPane.OK_CANCEL_OPTION);
+        int res = JOptionPane.showConfirmDialog(this, p, "Novo Tamanho", JOptionPane.OK_CANCEL_OPTION);
         if (res == JOptionPane.OK_OPTION) {
             try {
                 mainGUI.resizeGrid(Integer.parseInt(wField.getText()), Integer.parseInt(hField.getText()));
@@ -231,7 +231,7 @@ public class ControlPanel extends JPanel {
             lblStatus.setText("Status: A CORRER");
             lblStatus.setForeground(new Color(0, 150, 0));
         } else {
-            btnStartStop.setText("Iniciar (Infinito)");
+            btnStartStop.setText("Iniciar");
             btnStartStop.setBackground(UIManager.getColor("Button.background"));
             lblStatus.setText("Status: PARADO");
             lblStatus.setForeground(Color.RED);
