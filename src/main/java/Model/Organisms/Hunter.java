@@ -26,7 +26,11 @@ public class Hunter extends Animal {
 
         if (totalPrey < config.getHUNTER_DEPARTURE_THRESHOLD()) {
             eco.removeOrganism(this);
-            System.out.println("Hunter foi embora: População de caça demasiado baixa.");
+            // Hunter saiu
+            /*
+             * Logica que acontece quando o cacador
+             * sai devido a existirem poucos animais
+             */
             return;
         }
 
@@ -35,7 +39,11 @@ public class Hunter extends Animal {
 
             if (random.nextDouble() < departureProb) {
                 eco.removeOrganism(this);
-                System.out.println("Hunter foi embora: Satisfeito após caçar o suficiente.");
+                // Hunter saiu
+                /*
+                 * Logica que acontece quando o cacador
+                 * sai devido a sua energia ficar satisfeita
+                 */
                 return;
             }
         }
@@ -106,7 +114,10 @@ public class Hunter extends Animal {
             eco.removeOrganism(prey);
             this.energy += getEnergyGainFromFood();
 
-            System.out.println("Hunter at " + getPosition().getX() + " sniped a " + prey.getType());
+            // Hunter caçou
+            /*
+                Logica que acontece quando o caçador caça algo
+             */
         } else {
             this.energy -= 2;
         }

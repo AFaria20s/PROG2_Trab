@@ -138,7 +138,8 @@ public class Ecosystem {
             }
 
             if (addedCount > 0) {
-                System.out.println("««« HUNTER APPEARANCE: " + addedCount + " Caçador(es) chegaram! »»»");
+                // Hunter appearence
+                // Logica quando aparece um hunter
             }
         }
     }
