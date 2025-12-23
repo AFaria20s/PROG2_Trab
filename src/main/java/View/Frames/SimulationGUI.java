@@ -95,6 +95,18 @@ public class SimulationGUI {
                 }
             }
         });
+
+        // Caso o user clique H com godMode ativado, cria hunter
+        InputMap inputMap = simPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = simPanel.getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), "spawnHunter");
+        actionMap.put("spawnHunter", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (godModeActive) addOrganisms(OrganismType.HUNTER, 1);
+            }
+        });
     }
 
     public int calculateCellSize() {
