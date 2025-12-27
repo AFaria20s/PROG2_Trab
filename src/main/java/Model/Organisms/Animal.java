@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Classe abstrata que representa organismos móveis com necessidades energéticas.
+ * Implementa os comportamentos de Movimentação, Alimentação e Reprodução Sexuada.
+ */
 public abstract class Animal extends Organism implements Movable, Eater, Reproducible {
 
     protected int energy;

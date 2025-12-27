@@ -4,6 +4,9 @@ import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
 
+/**
+ * Sheep: Presa que consome plantas.
+ */
 public class Sheep extends Animal {
 
     public Sheep(Position pos) {

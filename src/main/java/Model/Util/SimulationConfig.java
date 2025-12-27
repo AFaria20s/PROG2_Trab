@@ -2,11 +2,27 @@ package Model.Util;
 
 import View.ThemeType;
 
+/**
+ * Central de configuração da simulação (Singleton).
+ * Esta classe armazena todas as constantes e variáveis de estado que regem o
+ * comportamento dos organismos (probabilidades, limites de energia, idade, etc.)
+ * e as definições do ambiente (tamanho da grelha e velocidade).
+ * * <p>O uso do padrão Singleton permite que tanto a lógica de negócio (Ecosystem)
+ * quanto a interface (ConfigDialog) acedam e modifiquem os mesmos parâmetros em tempo real.</p>
+ */
 public class SimulationConfig {
 
+    /** Instância única da classe (Singleton). */
     private static SimulationConfig instance;
+
+    /** Construtor privado para impedir a instanciação externa. */
     private SimulationConfig() {}
 
+    /**
+     * Obtém a instância única da configuração.
+     * Se não existir, cria uma nova (Lazy Initialization).
+     * @return A instância global de SimulationConfig.
+     */
     public static SimulationConfig getInstance() {
         if (instance == null) {
             instance = new SimulationConfig();

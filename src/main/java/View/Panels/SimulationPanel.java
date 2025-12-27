@@ -8,6 +8,11 @@ import Model.Util.Position;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Painel responsável pela renderização gráfica da grelha 2D do ecossistema.
+ * Utiliza Graphics2D para desenhar cada organismo como um quadrado colorido,
+ * garantindo que a proporção das células seja mantida independentemente do tamanho da janela.
+ */
 public class SimulationPanel extends JPanel {
     private final Ecosystem ecosystem;
 
@@ -15,6 +20,12 @@ public class SimulationPanel extends JPanel {
         this.ecosystem = ecosystem;
     }
 
+    /**
+     * Desenha os componentes da simulação.
+     * Calcula o <b>cellSize</b> dinamicamente para centrar a grelha no painel
+     * e aplica as cores definidas no OrganismType para cada entidade.
+     * @param g O contexto gráfico utilizado para desenhar.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
