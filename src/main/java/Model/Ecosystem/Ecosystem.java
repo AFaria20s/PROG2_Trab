@@ -177,6 +177,14 @@ public class Ecosystem {
      */
     public void moveOrganism(Organism org, Position newPos) {
         Position oldPos = org.getPosition();
+
+        //BUG-FIX: Remover organismo que está na posição destino ANTES de sobrescrever
+        Organism targetOrg = this.grid[newPos.getY()][newPos.getX()];
+        if (targetOrg != null && !(targetOrg instanceof Empty)) {
+            removeOrganism(targetOrg);  // Remove da lista E marca como morto
+        }
+
+        // Limpa posição antiga
         this.grid[oldPos.getY()][oldPos.getX()] = new Empty(oldPos, OrganismType.EMPTY);
         org.setPosition(newPos);
         this.grid[newPos.getY()][newPos.getX()] = org;

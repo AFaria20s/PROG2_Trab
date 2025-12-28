@@ -92,8 +92,10 @@ public abstract class Animal extends Organism implements Movable, Eater, Reprodu
         for (Position p : eco.getAdjacentPositions(getPosition())) {
             Organism target = eco.getOrganismAt(p);
 
-            // Verifica se é da mesma classe e tem energia
-            if (target instanceof Animal possiblePartner) {
+            // Primeiro verifica se é Animal, depois se é da mesma classe
+            if (target instanceof Animal possiblePartner &&
+                    target.getClass() == this.getClass()) {
+
                 if (possiblePartner.energy >= getMinEnergyToReproduce()) {
                     partner = possiblePartner;
                     break;
