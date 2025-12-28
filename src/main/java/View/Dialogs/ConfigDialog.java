@@ -11,11 +11,24 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-
+/**
+ * Janela de diálogo modal para configuração de parâmetros da simulação.
+ * Organiza as configurações em separadores (Tabs) para facilitar o ajuste de:
+ * <ul>
+ * <li>Probabilidades de spawn inicial e Temas visuais.</li>
+ * <li>Metabolismo e reprodução de Lobos e Ovelhas.</li>
+ * <li>Ciclo de vida das Plantas.</li>
+ * <li>Comportamento e limites de energia do Caçador.</li>
+ * </ul>
+ */
 public class ConfigDialog extends JDialog {
 
     private final SimulationConfig config;
 
+    /**
+     * Constrói o diálogo de configuração.
+     * @param owner A janela principal (Frame) à qual este diálogo pertence.
+     */
     public ConfigDialog(Frame owner) {
         super(owner, "Configurações do Ecossistema", true);
         this.config = SimulationConfig.getInstance();
@@ -78,7 +91,10 @@ public class ConfigDialog extends JDialog {
 
         return main;
     }
-
+    /**
+     * Aplica o LookAndFeel selecionado a todos os componentes da aplicação.
+     * @param theme O tema visual (LIGHT, DARK, DARCULA).
+     */
     private void applyTheme(ThemeType theme) {
         try {
             switch (theme) {
@@ -207,6 +223,14 @@ public class ConfigDialog extends JDialog {
     // Copia e cola os métodos addProbSlider, addIntSpinner, addToGrid, createVerticalPanel, createGroupPanel
     // do código anterior, pois não precisam de mudar.
 
+    /**
+     * Cria um painel com um slider configurado para manipular valores decimais (0.0 a 1.0).
+     * @param p O painel de destino.
+     * @param labelText Texto descritivo.
+     * @param initial Valor inicial.
+     * @param gridY Posição na grelha vertical.
+     * @param setter Método de callback para atualizar o SimulationConfig.
+     */
     private void addProbSlider(JPanel p, String labelText, double initial, int gridY, java.util.function.DoubleConsumer setter) {
         JLabel label = new JLabel(labelText);
         JPanel sliderCont = new JPanel(new BorderLayout(5, 0));

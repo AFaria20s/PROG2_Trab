@@ -12,6 +12,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Painel de controlo lateral da simulação.
+ * Responsável por:
+ * <ul>
+ * <li>Exibir a legenda de cores dos organismos.</li>
+ * <li>Mostrar estatísticas em tempo real (passos e contagem de populações).</li>
+ * <li>Disponibilizar controlos de execução (Start/Pause, N Passos, Extinção).</li>
+ * <li>Gerir funcionalidades de depuração como o "God Mode".</li>
+ * </ul>
+ */
 public class ControlPanel extends JPanel {
     private final SimulationGUI mainGUI;
 
@@ -25,6 +35,10 @@ public class ControlPanel extends JPanel {
     private int secretClickCount = 0;
     private long lastClickTime = 0;
 
+    /**
+     * Constrói o painel lateral com uma estrutura vertical (BoxLayout).
+     * @param gui Referência ao controlador principal para delegar ações.
+     */
     public ControlPanel(SimulationGUI gui) {
         this.mainGUI = gui;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -128,7 +142,9 @@ public class ControlPanel extends JPanel {
     }
 
     // --- Helpers Visuais (Legenda) ---
-
+    /**
+     * Adiciona um item visual à legenda com um quadrado colorido e o nome do organismo.
+     */
     private void addLegendItem(String name, Color color) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 2));
@@ -269,7 +285,16 @@ public class ControlPanel extends JPanel {
         return b;
     }
 
-    // --- Update Method CORRIGIDO ---
+    /**
+     * Atualiza os dados exibidos no painel (Labels e botões).
+     * Chamado a cada passo da simulação pela SimulationGUI.
+     * @param step Número do passo atual.
+     * @param w Contagem de lobos.
+     * @param s Contagem de ovelhas.
+     * @param p Contagem de plantas.
+     * @param h Contagem de caçadores.
+     * @param isRunning Estado atual do Timer da simulação.
+     */
     public void updateStats(int step, int w, int s, int p, int h, boolean isRunning) {
         lblStep.setText(String.format("Steps:   %d", step));
         lblWolf.setText(String.format("Lobos:   %d", w));

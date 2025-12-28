@@ -2,35 +2,41 @@ package Model.Util;
 
 import java.util.Random;
 
+/**
+ * Define as direções cardeais possíveis para a movimentação dos organismos na grelha.
+ * Cada direção contém os vetores de deslocamento (dx, dy) necessários para calcular
+ * a nova posição num plano 2D.
+ */
 public enum Direction {
-    // Definir as direções e os seus deslocamentos (dx, dy)
-    NORTH(0, -1),   // X não muda, Y diminui
-    SOUTH(0, 1),    // X não muda, Y aumenta
-    EAST(1, 0),     // X aumenta, Y não muda
-    WEST(-1, 0);    // X diminui, Y não muda
+    /** Movimento para cima (diminui o índice da linha). */
+    NORTH(0, -1),
+    /** Movimento para baixo (aumenta o índice da linha). */
+    SOUTH(0, 1),
+    /** Movimento para a direita (aumenta o índice da coluna). */
+    EAST(1, 0),
+    /** Movimento para a esquerda (diminui o índice da coluna). */
+    WEST(-1, 0);
 
-    private final int dx; // mudança no eixo X
-    private final int dy; // mudança no eixo Y
+    private final int dx;
+    private final int dy;
 
     Direction(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    public int getDx() {
-        return dx;
-    }
+    /** @return O deslocamento no eixo X (colunas). */
+    public int getDx() { return dx; }
 
-    public int getDy() {
-        return dy;
-    }
+    /** @return O deslocamento no eixo Y (linhas). */
+    public int getDy() { return dy; }
 
     /**
-     * Obter diracao aleatoria
+     * Seleciona uma direção aleatória entre as disponíveis.
+     * @return Uma instância de Direction escolhida ao acaso.
      */
     public static Direction getRandomDirection() {
         Direction[] values = Direction.values();
-        // Escolhe um índice aleatório
         int index = new Random().nextInt(values.length);
         return values[index];
     }

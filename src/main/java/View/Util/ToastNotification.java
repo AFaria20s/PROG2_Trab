@@ -2,10 +2,13 @@ package View.Util;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 
+/**
+ * Componente de notificação visual temporária (Toast).
+ * É desenhado sobre o <i>GlassPane</i> da janela principal para flutuar acima
+ * de todos os outros componentes sem interferir no layout.
+ */
 public class ToastNotification extends JPanel {
 
     private final String message;
@@ -23,6 +26,9 @@ public class ToastNotification extends JPanel {
         return new Dimension(220, 40);
     }
 
+    /**
+     * Renderiza o balão com cantos arredondados e texto centrado.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -49,6 +55,13 @@ public class ToastNotification extends JPanel {
         g2.dispose();
     }
 
+    /**
+     * Exibe uma notificação no topo direito do frame.
+     * @param frame Janela onde a notificação deve aparecer.
+     * @param msg Mensagem a exibir.
+     * @param color Cor de fundo do balão de notificação.
+     * @param durationInMillis Tempo de permanência antes de desaparecer.
+     */
     public static void show(JFrame frame, String msg, Color color, int durationInMillis) {
         JRootPane root = frame.getRootPane();
         Component rawGlass = root.getGlassPane();

@@ -4,6 +4,9 @@ import Model.Util.OrganismType;
 import Model.Util.Position;
 import Model.Util.SimulationConfig;
 
+/**
+ * Wolf: Predador que consome ovelhas.
+ */
 public class Wolf extends Animal {
 
     public Wolf(Position pos) {

@@ -7,6 +7,10 @@ import Model.Util.SimulationConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entidade especial que entra no ecossistema para caçar Lobos e Ovelhas.
+ * Possui um raio de caça alargado e sai do sistema se estiver satisfeito ou se houver pouca caça.
+ */
 public class Hunter extends Animal {
     public Hunter(Position pos) {
         super(pos, OrganismType.HUNTER, 80);
@@ -82,6 +86,7 @@ public class Hunter extends Animal {
         }
     }
 
+    /** Implementa caça à distância baseada em probabilidade de sucesso (Skill Factor). */
     @Override
     public void eat(Ecosystem eco) {
         SimulationConfig config = SimulationConfig.getInstance();

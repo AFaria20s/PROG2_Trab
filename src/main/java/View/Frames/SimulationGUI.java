@@ -20,6 +20,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
+/**
+ * Controlador principal da interface gráfica da simulação.
+ * Gere a janela principal (JFrame), o loop de simulação (Swing Timer) e a
+ * resposta a eventos do utilizador (cliques de rato e teclas).
+ * * <p>Implementa funcionalidades avançadas como:</p>
+ * <ul>
+ * <li><b>God Mode:</b> Edição direta da grelha através do rato.</li>
+ * <li><b>Simulação Condicional:</b> Executar N passos ou até à extinção de uma espécie.</li>
+ * <li><b>Notificações:</b> Avisos visuais via Toast quando eventos críticos ocorrem.</li>
+ * </ul>
+ */
 public class SimulationGUI {
     private Ecosystem ecosystem;
     private JFrame frame;
@@ -33,6 +44,10 @@ public class SimulationGUI {
 
     private boolean godModeActive = false;
 
+    /**
+     * Inicializa a interface, configura os Listeners de rato para o God Mode
+     * e define os atalhos de teclado (ex: 'H' para spawnar caçador).
+     */
     public SimulationGUI() {
         setupLookAndFeel();
         initEcosystem(SimulationConfig.getInstance().getWIDTH(), SimulationConfig.getInstance().getHEIGHT());
@@ -109,6 +124,11 @@ public class SimulationGUI {
         });
     }
 
+    /**
+     * Calcula o tamanho ideal de cada célula para que a grelha caiba perfeitamente
+     * no espaço disponível do painel, mantendo a proporção quadrada.
+     * @return O tamanho em píxeis do lado de cada célula.
+     */
     public int calculateCellSize() {
         int gridW = ecosystem.getWidth();
         int gridH = ecosystem.getHeight();
@@ -175,6 +195,10 @@ public class SimulationGUI {
 
     // --- Simulacao ---
 
+    /**
+     * Ciclo principal de execução disparado pelo Timer.
+     * Verifica condições de paragem (extinção ou limite de passos) e atualiza a UI.
+     */
     private void executeStepLoop() {
         // Verifica se o ecossistema morreu
         if (!ecosystem.isLifeActive()) {
@@ -221,6 +245,10 @@ public class SimulationGUI {
         }
     }
 
+    /**
+     * Ativa o "God Mode", permitindo ao utilizador adicionar/remover organismos
+     * clicando diretamente nas células da grelha.
+     */
     public void enableGodMode() {
         this.godModeActive = true;
         // Podes mudar a cor da borda da grelha para avisar que está ativo
@@ -281,6 +309,11 @@ public class SimulationGUI {
         updateUI();
     }
 
+    /**
+     * Redimensiona a grelha da simulação. Para a execução atual e gera um novo ecossistema.
+     * @param w Nova largura.
+     * @param h Nova altura.
+     */
     public void resizeGrid(int w, int h) {
         stopSimulation();
         initEcosystem(w, h);
