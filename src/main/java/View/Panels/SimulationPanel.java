@@ -54,6 +54,7 @@ public class SimulationPanel extends JPanel {
                 else if (org instanceof Plant) g2d.setColor(Model.Util.OrganismType.PLANT.getColor());
                 else if (org instanceof Hunter) g2d.setColor(OrganismType.HUNTER.getColor());
                 else if (org instanceof Empty) g2d.setColor(OrganismType.EMPTY.getColor());
+                else if (org instanceof Bear) g2d.setColor(OrganismType.BEAR.getColor());
 
                 int drawX = offsetX + (x * cellSize);
                 int drawY = offsetY + (y * cellSize);

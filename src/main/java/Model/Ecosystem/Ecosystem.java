@@ -17,7 +17,7 @@ import java.util.Random;
  * Representa o motor de simulação do ecossistema.
  * Esta classe gere uma grelha bidimensional de organismos, controlando o seu ciclo de vida,
  * movimentação, interações espaciais e a evolução temporal através de passos de simulação.
- * * @author Seu Nome / Grupo
+ * * @author Afonso Faria & Flávio Fernandes / Grupo 02
  * @version 1.0
  */
 public class Ecosystem {
@@ -313,6 +313,7 @@ public class Ecosystem {
                 if (roll < config.getPROB_WOLF_SPAWN()) newOrg = new Wolf(pos);
                 else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN()) newOrg = new Sheep(pos);
                 else if (roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN() + config.getPROB_PLANT_SPAWN()) newOrg = new Plant(pos);
+                else if(roll < config.getPROB_WOLF_SPAWN() + config.getPROB_SHEEP_SPAWN() + config.getPROB_PLANT_SPAWN()+ 0.15) newOrg = new Bear(pos);
                 else newOrg = new Empty(pos, OrganismType.EMPTY);
 
                 this.grid[y][x] = newOrg;
@@ -387,6 +388,7 @@ public class Ecosystem {
             case WOLF -> new Wolf(pos);
             case SHEEP -> new Sheep(pos);
             case PLANT -> new Plant(pos);
+            case BEAR -> new Bear(pos);
             case EMPTY -> new Empty(pos, OrganismType.EMPTY);
         };
     }

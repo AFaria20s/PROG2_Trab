@@ -17,7 +17,9 @@ public enum OrganismType {
     /** Animal herbívoro (presa). */
     SHEEP("O", "Sheep", new Color(69, 113, 192)),
     /** Animal carnívoro (predador). */
-    WOLF("w", "Wolf", new Color(82, 57, 57));
+    WOLF("w", "Wolf", new Color(82, 57, 57)),
+
+    BEAR("b", "Bear", new Color(226, 35, 248));
 
     private final String symbol;
     private final String type;
