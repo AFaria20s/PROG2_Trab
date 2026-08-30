@@ -33,7 +33,7 @@ The simulation runs on a grid where different entities interact based on biologi
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/AFaria20s/EcoSimulator.git](https://github.com/AFaria20s/EcoSimulator.git)
+    git clone https://github.com/AFaria20s/EcoSimulator.git
     cd EcoSimulator
     ```
 
